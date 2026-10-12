@@ -1,0 +1,53 @@
+/* Cleo Days · Android-first design system
+   Jakub Krehel better-ui + Emil Kowalski mobile-native/apple-design */
+:root{--ease:cubic-bezier(.22,1,.36,1)}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:80px}
+body{font-family:Roboto,"Noto Sans",system-ui,-apple-system,sans-serif;font-optical-sizing:auto}
+button,a,input,textarea,select{touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+button:active,.btn:active,.iconbtn:active,.day-pill:active{transform:scale(.975);transition:transform 110ms ease-out}
+:where(button,a,input,select,textarea):focus-visible{outline:3px solid #d58a51;outline-offset:3px}
+.btn,.iconbtn,.day-pill,.nav-item{transition:transform .14s var(--ease),background-color .16s,color .16s,box-shadow .2s}
+.btn,.iconbtn{min-height:44px}
+h1,h2,h3{font-optical-sizing:auto;text-wrap:balance}
+p{overflow-wrap:break-word}
+#installCleo{min-height:42px;border:0;border-radius:13px;padding:0 12px;display:inline-flex;gap:6px;align-items:center;background:#165c4e;color:white;font-size:12px;font-weight:680}
+#installCleo[hidden]{display:none!important}#installCleo svg{width:17px;height:17px}
+dialog::backdrop{background:rgba(13,30,24,.55);backdrop-filter:blur(3px)}
+@media(max-width:780px){
+ :root{--bg:#f7f6f2;--panel:#fff;--ink:#193b34;--muted:#526a61;--line:rgba(24,60,48,.12);--radius:21px}
+ html{scroll-padding-top:75px}
+ body{font-size:14px}
+ .app{min-height:100dvh}
+ .main{max-width:660px;padding:19px 16px calc(115px + env(safe-area-inset-bottom));min-height:calc(100dvh - 60px)}
+ .topbar{top:0;height:calc(60px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 17px 0;background:rgba(248,249,245,.93);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%);border:0;box-shadow:0 1px 0 #1a4e3914;z-index:40}
+ .mobile-brand{font-size:21px;font-weight:780;letter-spacing:-.06em}.mobile-brand small{font-size:8px;letter-spacing:.12em;font-weight:700}
+ .top-actions{gap:8px}.top-actions .search-trigger{min-width:44px;min-height:44px;border-radius:14px;background:white;display:grid;place-items:center;padding:0;box-shadow:0 1px 2px #122e2811}
+ .top-actions .search-trigger svg{width:19px;height:19px}
+ .clock-top strong{font-size:16px;font-weight:660}.clock-top small{font-size:8px;letter-spacing:.05em}
+ .mobile-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));width:auto;border:1px solid rgba(255,255,255,.9);border-radius:23px;padding:8px;background:rgba(255,255,255,.93);backdrop-filter:blur(25px) saturate(175%);-webkit-backdrop-filter:blur(25px) saturate(175%);box-shadow:0 13px 42px rgba(8,40,27,.15),0 2px 8px rgba(8,40,27,.06);z-index:70}
+ .mobile-nav button{min-height:58px;border-radius:16px;display:flex;flex-direction:column;justify-content:center;gap:4px;font-size:10px;font-weight:580;color:#63756d;padding:6px 1px;background:none;transition:transform .12s,color .12s,background .12s}
+ .mobile-nav button svg{width:22px;height:22px;stroke-width:1.8}.mobile-nav button.active{color:#125949;background:#e4f1e9;font-weight:740}.mobile-nav button.active svg{stroke-width:2.2}.mobile-nav button:active{transform:scale(.93)}
+ .page{animation:page-in .2s var(--ease) both}@keyframes page-in{from{opacity:.7;transform:translateY(5px)}to{opacity:1;transform:none}}
+ .hero{border-radius:26px;box-shadow:0 13px 28px #153f3720;margin-bottom:21px}.hero-content{padding:26px 22px}.hero h1{font-size:clamp(37px,10vw,52px);letter-spacing:-.054em}
+ .welcome-line h2{font-size:23px;letter-spacing:-.04em}
+ .date-strip{display:flex!important;grid-template-columns:none!important;gap:9px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;margin:15px -16px 18px;padding:0 16px 6px}
+ .date-strip::-webkit-scrollbar{display:none}.day-pill{scroll-snap-align:center;flex:0 0 70px;min-height:83px;border-radius:16px;justify-content:center}.day-pill strong{font-size:23px;font-weight:670;font-variant-numeric:tabular-nums}.day-pill small{font-size:10px}.day-pill.active{box-shadow:0 5px 13px #0e5e431a}
+ .stat-grid{gap:10px;margin-bottom:20px}.stat{min-height:154px;padding:15px;border-radius:19px}.stat h3{font-size:15px}.stat p{font-size:11px}.stat-icon{border-radius:12px}
+ .section-head{margin:25px 0 13px}.section-head h2{font-size:21px}
+ .panel,.journey-card,.activity-card{border-radius:20px}.panel{padding:18px}
+ .btn{border-radius:13px;font-size:12px;min-height:44px}.btn.small-btn{min-height:42px}.iconbtn{width:44px;height:44px;border-radius:13px}
+ .tag{font-size:11px;padding:5px 8px;border-radius:8px}.event{min-height:58px}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.table-wrap table{min-width:510px}
+ .photo-card{border-radius:18px;overflow:hidden}.photo-card img{height:194px}
+ .search-dialog,.menu-dialog{position:fixed;inset:auto 0 0!important;width:100%!important;max-width:none!important;max-height:85dvh!important;margin:0!important;border:none!important;border-radius:26px 26px 0 0!important;padding:19px 16px calc(18px + env(safe-area-inset-bottom))!important;overflow-y:auto;overscroll-behavior:contain;box-shadow:0 -13px 45px #041b1124}
+ .search-dialog::before,.menu-dialog::before{content:"";display:block;width:36px;height:4px;background:#cbd4cc;border-radius:8px;margin:-6px auto 17px}
+ #globalSearch,input,select,textarea{font-size:max(16px,1em)!important}
+ .image-dialog{max-width:100vw;max-height:100dvh;border-radius:0!important}.image-toolbar{padding-top:max(10px,env(safe-area-inset-top))}
+ .toast{bottom:calc(94px + env(safe-area-inset-bottom));max-width:calc(100vw - 30px);border-radius:14px}
+}
+@media(max-width:390px){.clock-top small{display:none}.topbar{padding-left:14px;padding-right:14px}.main{padding-left:14px;padding-right:14px}.date-strip{margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px}.hero-content{padding:22px 20px}}
+@media(hover:none){.btn:hover,.iconbtn:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.page{animation:none!important}.hero-art .sun{animation:none!important}}
+@media(prefers-reduced-transparency:reduce){.topbar,.mobile-nav{background:#fff;backdrop-filter:none}}
+@media(prefers-contrast:more){.mobile-nav,.panel,.stat{border-color:#527769}}

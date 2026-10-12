@@ -1,0 +1,4 @@
+const C="cleo-days-pwa-20261012-v4",BASE=new URL("./",self.location.href),CORE=["./","./index.html","./native.css","./native.js","./manifest.webmanifest","./icon-192.png","./icon-512.png","./icon.svg"];
+self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
+self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith("cleo-days-")&&k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener("fetch",e=>{if(e.request.method!=="GET"||!e.request.url.startsWith(BASE.href))return;e.respondWith((async()=>{const c=await caches.open(C);try{const r=await fetch(e.request);if(r.ok)try{await c.put(e.request,r.clone())}catch(_){}return r}catch(_){return await c.match(e.request)||((e.request.mode==="navigate")?await c.match("./index.html"):null)||new Response("Offline",{status:503})}})());});

@@ -1,0 +1,17 @@
+name: Refresh published GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+jobs:
+  request-pages-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request a fresh branch-based Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X POST "repos/${{ github.repository }}/pages/builds"

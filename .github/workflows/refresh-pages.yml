@@ -1,16 +1,32 @@
-name: Refresh published GitHub Pages
+name: Publish Cleo Days to Pages
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 permissions:
-  contents: read
+  contents: write
   pages: write
+
+concurrency:
+  group: cleo-pages-sync
+  cancel-in-progress: false
+
 jobs:
-  request-pages-build:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Request a fresh branch-based Pages build
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Fast-forward GitHub Pages branch
+        run: |
+          git push origin HEAD:gh-pages
+
+      - name: Request a GitHub Pages build
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

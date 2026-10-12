@@ -1,5 +1,5 @@
 {
-  "name": "Cleo Days · Euer Cleopatra-Urlaub",
+  "name": "Cleo Days · Urlaub in Makadi Bay",
   "short_name": "Cleo Days",
   "description": "Hotelprogramm, Restaurants, Shows, Ausflüge und persönlicher Urlaubsplan.",
   "lang": "de",
@@ -8,8 +8,8 @@
   "id": "./",
   "display": "standalone",
   "orientation": "any",
-  "theme_color": "#163e3b",
-  "background_color": "#f7f6f2",
+  "theme_color": "#1c3035",
+  "background_color": "#f5f5f4",
   "icons": [
     {
       "src": "./icon.svg",

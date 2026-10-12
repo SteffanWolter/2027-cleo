@@ -1,0 +1,13 @@
+name: Runner diagnostics
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check runner
+        run: echo "Runner ready for Cleo Days"

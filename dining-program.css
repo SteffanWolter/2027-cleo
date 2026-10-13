@@ -12,3 +12,12 @@
 @media(max-width:1050px){.cd-program-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cd-program-card h3{min-height:0}}
 @media(max-width:780px){.cd-highlight{margin:16px 0 23px;padding:21px;flex-direction:column;align-items:stretch;border-radius:20px}.cd-highlight-content strong{font-size:26px}.cd-highlight-actions{flex-direction:row}.cd-highlight-actions button{flex:1}.cd-program-grid{gap:10px}.cd-program-card{padding:15px;border-radius:16px}.cd-card-top{align-items:start;min-height:43px}.cd-card-top span{font-size:9px}.cd-card-top small{font-size:8px}.cd-program-card h3{font-size:15px}.cd-card-time{margin-top:10px;font-size:10px}.cd-card-buttons button{font-size:10px}.cd-section{margin-top:18px}#cdDialog{width:100vw;max-height:91dvh;position:fixed;bottom:0;left:0;right:0;margin:0;border-radius:25px 25px 0 0}.cd-dialog-hero{padding:18px 23px 26px}.cd-dialog-inner{padding:20px 22px 38px}.cd-dialog-bar{padding-bottom:20px}}
 @media(max-width:365px){.cd-program-grid{grid-template-columns:1fr}.cd-card-top{min-height:25px}.cd-program-card h3{font-size:18px}.cd-highlight-actions button{font-size:11px;padding:10px}}
+
+/* Waterfront's daily special: displayed in the calendar even without a documented clock time */
+.cd-calendar-waterfront{background:#eaf5ee;border:1px solid #dbeadf;border-radius:12px}
+.cd-calendar-waterfront .event-time{color:#416e55;font-size:11px;letter-spacing:.025em}
+.cd-calendar-waterfront .event-time small{font-size:9px;font-weight:500}
+.cd-calendar-waterfront .event-title{font-weight:735;color:#2b5441}
+.cd-calendar-waterfront .event-note{color:#5d7865;line-height:1.5}
+.cd-calendar-waterfront .ce-map-link{margin-top:9px;font-size:11px}
+.cd-calendar-waterfront .poster-tap-hint{background:#dcece1;color:#326448;font-weight:700}

@@ -195,7 +195,10 @@ async function boot(){
   const doc=parser.parseFromString(html,'text/html'),pdoc=parser.parseFromString(posterHtml,'text/html');
   const dataset=JSON.parse(doc.querySelector('#cleoData').textContent);
   const guides=JSON.parse(pdoc.querySelector('#poster-data').textContent);
-  const ev=dataset.events.find(x=>x.id===id);
+  let ev=dataset.events.find(x=>x.id===id);
+  if(!ev&&qs.has('custom')){
+   try{const custom=JSON.parse(qs.get('custom'));if(custom.id===id&&custom.status==='own')ev=custom}catch(_){}
+  }
   if(!ev)throw new Error('Für diese Veranstaltung liegt kein bestätigter Kalendereintrag vor.');
   fill(ev,guides);
  }catch(err){

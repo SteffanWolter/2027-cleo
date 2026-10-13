@@ -36,3 +36,6 @@
 }
 @media(max-height:650px) and (max-width:780px){.ce-place-panel{max-height:35dvh}.ce-place-panel:not(.has-place){max-height:115px;padding:13px}.ce-overview h2{font-size:16px}.ce-overview p{display:none}.ce-map-tools{top:75px}#ceStage{top:136px;bottom:187px}.ce-map-controls{top:177px}.ce-layer{bottom:217px}}
 @media(prefers-reduced-motion:reduce){#ceMap *,#ceDetail *,#ceToast{transition:none!important;animation:none!important}}@media(prefers-reduced-transparency:reduce){.ce-map-brand,.ce-search,.ce-place-panel,#mobileNav.mobile-nav{background:#fffef8;backdrop-filter:none}}@media print{body.ce-detail-open>*:not(#ceDetail){display:none!important}body.ce-detail-open #ceDetail{display:block;position:static;width:100%;max-height:none;box-shadow:none;border-radius:0;overflow:visible}.ce-detail-top button,.ce-locate,.ce-print{display:none!important}.ce-detail-head{print-color-adjust:exact;-webkit-print-color-adjust:exact}.ce-detail-section{break-inside:avoid}}
+
+/* selected-layer-explorer2: keep the layer control usable above an open place sheet */
+@media(max-width:780px){#ceMap:has(.ce-place-panel.has-place) .ce-layer{top:calc(176px + env(safe-area-inset-top));bottom:auto;max-width:calc(100% - 72px)}}

@@ -17,7 +17,7 @@ function daily(date){
  const day=new Date(date+'T12:00:00Z').getUTCDay();
  const wf=day===2?{name:'Arabian Night · 1001 Nacht',description:'Orientalisches Themenbuffet. Dienstags gibt es laut Hotel anstelle der ergänzenden À-la-carte-Auswahl das Arabian Night Buffet.',tag:'Dienstag · vom Hotel bestätigt'}:
  day===5?{name:'Fish & BBQ Night',description:'Freitags Fisch- und Grillbuffet im Waterfront. Nicht mit dem kostenpflichtigen Strand-BBQ des Familienresorts verwechseln.',tag:'Freitag · vom Hotel bestätigt'}:
- day===0?{name:'Gala-Dinner · Black & White',description:'Sonntags festliches Themenbuffet mit besonderem Unterhaltungsprogramm. Das Black-&-White-Motto wurde vom Hotel bestätigt.',tag:'Sonntag · vom Hotel bestätigt'}:
+ day===0?{name:'Gala-Dinner',description:'Sonntags festliches Themenbuffet mit besonderem Unterhaltungsprogramm. Ein Black-&-White-Dresscode speziell für diesen Waterfront-Abend ist nicht bestätigt.',tag:'Sonntag · vom Hotel bestätigt'}:
  {name:'Wechselndes Themenbuffet',description:'Das Hotel bestätigt ein täglich wechselndes Abendbuffet und zusätzlich À-la-carte-Menüs an diesen Abenden. Das konkrete heutige Motto ist nicht veröffentlicht.',tag:'Konkretes Motto nicht veröffentlicht'};
  return [
  {id:'waterfront',name:'Waterfront',title:wf.name,description:wf.description,tag:wf.tag,location:'Waterfront · Adults Only',map:'19',time:null,food:'Offenes Buffet; an anderen Tagen auch À-la-carte-Menüs.',included:'Laut eurer Bestätigung im bezahlten Adults-Only-Upgrade enthalten.',sources:[urls.hotel,urls.weekly,urls.themes]},
@@ -36,6 +36,16 @@ function box(){
 function cards(date){
  return '<section class="cleorest" data-date="'+date+'"><div class="cleorest-head"><span>ESSEN & THEMENABENDE</span><h2>Eure Restaurants heute</h2><p>'+esc(dateLabel(date))+' · bestätigte Themen und offene Angaben</p></div><div class="cleorest-grid">'+daily(date).map(x=>
  '<button class="cleorest-card '+x.id+'" type="button" data-restaurant="'+x.id+'" data-restaurant-date="'+date+'"><span class="cleorest-top">'+esc(x.name)+' <small>'+esc(x.tag)+'</small></span><strong>'+esc(x.title)+'</strong><span class="cleorest-time">'+(x.time?esc(x.time)+' Uhr':'Abend · Uhrzeit offen')+' <b>↗</b></span></button>').join('')+'</div><p class="cleorest-cite">Waterfront: regelmäßiger Hotelplan, kein Live-Menü. Soko: euer fotografierter Oktoberplan. <a target="_blank" rel="noopener" href="'+urls.weekly+'">Hotelbestätigung ↗</a></p></section>';
+}
+function weekMatrix(){
+ const dates=Array.from({length:9},(_,i)=>"2026-10-"+String(i+12).padStart(2,"0"));
+ let out='<section class="cleorest-week" id="cleorest-week"><div class="cleorest-head"><span>12.–20. OKTOBER</span><h2>Alle Restaurants · jeden Abend</h2><p>Jeden Tag das Thema ansehen. Die konkreten Öffnungstage des Pool Restaurants bleiben vor Ort zu bestätigen.</p></div><div class="cleorest-week-scroll"><table><thead><tr><th>Datum</th><th>Waterfront</th><th>Soko</th><th>Vista Mare</th><th>Pool Restaurant</th></tr></thead><tbody>';
+ for(const d of dates) {
+  out+='<tr'+(d===selected()?' class="active"':'')+'><th>'+esc(dateLabel(d))+'</th>';
+  for(const item of daily(d))out+='<td><button data-restaurant="'+item.id+'" data-restaurant-date="'+d+'"><b>'+esc(item.title)+'</b><small>'+esc(item.id==="waterfront"?"Abend · Uhrzeit vor Ort":item.tag)+'</small></button></td>';
+  out+='</tr>'
+ }
+ return out+'</tbody></table></div><p class="cleorest-cite">Hotel-Wochenplan 2026 für Waterfront, Oktoberplan 2026 für Soko. Keine Live-Speisekarte.</p></section>'
 }
 function untimed(date){
  const x=daily(date)[0];
@@ -63,7 +73,7 @@ function install(){
  const restaurants=main.querySelector('.restaurant-grid');
  if(restaurants){
   const holder=main.querySelector('#cleorest-food');
-  if(!holder||holder.dataset.date!==date){holder?.remove();restaurants.insertAdjacentHTML('beforebegin','<div id="cleorest-food" data-date="'+date+'">'+cards(date)+'</div>')}
+  if(!holder||holder.dataset.date!==date){holder?.remove();restaurants.insertAdjacentHTML('beforebegin','<div id="cleorest-food" data-date="'+date+'">'+cards(date)+weekMatrix()+'</div>')}
  }
  const journey=main.querySelectorAll('.journey-card');
  journey.forEach((n,i)=>{

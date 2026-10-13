@@ -1,0 +1,31 @@
+{
+  "source": "https://cms.odeontravel.rs/b2cDocuments/pdf/ALL%20INCLUSIVE%20HURGADA/Cleopatra%20Luxury%20AI%20concept%202024.pdf",
+  "sourceLabel": "Hotelbroschüre / AI-Konzept 2024, Seite 1",
+  "cropFractions": [
+    0.015894955079474776,
+    0.314453125,
+    0.48168624740843125,
+    0.7958984375
+  ],
+  "width": 1601,
+  "height": 1171,
+  "embeddedImages": [
+    [
+      29,
+      35
+    ],
+    [
+      23,
+      31
+    ],
+    [
+      285,
+      103
+    ],
+    [
+      754,
+      560
+    ]
+  ],
+  "note": "Historical resort plan, not GPS or a live routing map. Hotspots manually aligned to its numbered legend."
+}

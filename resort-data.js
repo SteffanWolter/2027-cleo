@@ -27,7 +27,7 @@ const rows=[
 [15,'Pool Restaurant & Bar','Poolbar','food',547,99,'fork','Eure Anlaufstelle für Mittagssnacks und Nachmittagsgebäck zwischen Family Pool und Activity Pool. Auch Darts, viele Shows und die Wochenhighlights sind hier angesetzt.'],
 [16,'Activity Pool','Activity Pool','pool',560,147,'waves','Aktivpool: Wassergymnastik startet laut Aushang um 12:00 Uhr. Die Halfway Bar liegt laut Hotel in der Nähe; ihr genauer Platz ist in diesem Plan nicht nummeriert.'],
 [17,'Strandbereich','Strand','beach',731,172,'sun','Bereich für Boccia, Volleyball, Yoga und die Strandhighlights. Die einzelnen Sportstationen sind im PDF nicht markiert – der Pin zeigt den Strandbereich, keinen exakten Kursplatz.'],
-[18,'Beach Resort · Adults Only','Adults Only','stay',745,515,'bed','Euer Upgrade-Bereich am Meer. Der Plan zeigt das Beach Resort; der konkrete Umfang eures vor Ort gekauften Upgrades ist separat mit dem Hotel zu klären.'],
+[18,'Beach Resort · Adults Only','Adults Only','stay',745,515,'bed','Euer Adults-Only-Upgrade am Meer. Die Sky Lounge liegt laut neuem Aushang im 3. Stock mit Panoramablick über Makadi Bay. Der Hotelplan markiert den Beach-Resort-Bereich, nicht den genauen Zugang zur Lounge.'],
 [19,'Waterfront Restaurant','Waterfront','food',859,402,'fork','Restaurant direkt am Meer im Adults-Only-Bereich. Frühstück, Mittag- und Abendessen; eigenständige aktuelle Uhrzeiten liegen in euren Aushängen nicht vor.'],
 [20,'Extra Divers · Tauchcenter','Tauchcenter','beach',968,540,'compass','Tauchbasis am südlichen Strandende. Kurse und Ausfahrten sind eigene Angebote; bei der Basis reservieren.'],
 [21,'Wassersport-Center','Wassersport','beach',634,92,'sail','Wassersportbereich laut Hotelplan. Angebote, Bedingungen und Preise vor Ort erfragen.'],

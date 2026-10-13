@@ -21,3 +21,9 @@
 .cd-calendar-waterfront .event-note{color:#5d7865;line-height:1.5}
 .cd-calendar-waterfront .ce-map-link{margin-top:9px;font-size:11px}
 .cd-calendar-waterfront .poster-tap-hint{background:#dcece1;color:#326448;font-weight:700}
+
+/* 2026-10-13 hotel photo · Adult-only events remain legible after their start time */
+.event[data-resort-area="adults-only"]{border-left:3px solid #72a79c;background:#f3faf7}
+.event[data-resort-area="adults-only"].past{opacity:1}
+.event[data-resort-area="adults-only"] .event-time{color:#2d7568}
+.event[data-resort-area="adults-only"] .event-note{color:#6f9085}

@@ -1,0 +1,199 @@
+name: Release and test Cleo Explorer
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/activate-explorer.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: cleo-explorer-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Wire the explorer and version its offline assets
+        run: |
+          python - <<'PY'
+          import pathlib,re,json
+          p=pathlib.Path('index.html'); s=p.read_text()
+          assert 'window.CleoDays=' in s
+          for name in ['resort-data.js','resort.js']:
+            assert pathlib.Path(name).is_file()
+            s=re.sub(r'<script src="\./'+re.escape(name)+r'(?:\?[^"]*)?"></script>\s*','',s)
+          s=re.sub(r'<link rel="stylesheet" href="\./resort\.css(?:\?[^"]*)?">\s*','',s)
+          s=s.replace('</head>','<link rel="stylesheet" href="./resort.css?v=explorer1">\n</head>')
+          s=s.replace('</body>','<script src="./resort-data.js?v=explorer1"></script>\n<script src="./resort.js?v=explorer1"></script>\n</body>')
+          s=s.replace("navigator.serviceWorker.register('./sw.js')", "navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'})")
+          p.write_text(s)
+          m=pathlib.Path('manifest.webmanifest'); d=json.loads(m.read_text())
+          d['shortcuts']=[{'name':'Hotelkarte','short_name':'Karte','url':'./#map','description':'Restaurants, Pools und Aktivitäten auf der Hotelkarte'},{'name':'Heute im Resort','short_name':'Heute','url':'./#today'}]
+          m.write_text(json.dumps(d,ensure_ascii=False,indent=2))
+          core=['./','./index.html','./native.css','./native.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./posters.html','./event.html','./resort.css','./resort-data.js','./resort.js','./assets/resort-map.svg','./assets/hotel-plan.webp','./assets/hotel-plan-source.pdf']
+          core+=['./'+str(x) for x in pathlib.Path('.').glob('10000*.jpg')]
+          for name in core:
+            if name!='./': assert pathlib.Path(name).is_file(),name
+          sw='''/* Cleo Explorer: offline shell, original plan and map. No personal data leaves the browser. */
+          const NAME='cleo-days-explorer-20261013-v1';
+          const CORE=__CORE__;
+          self.addEventListener('install',e=>e.waitUntil(caches.open(NAME).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
+          self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(a=>Promise.all(a.filter(n=>n.startsWith('cleo-days-')&&n!==NAME).map(n=>caches.delete(n)))).then(()=>self.clients.claim())));
+          self.addEventListener('fetch',e=>{
+            if(e.request.method!=='GET'||!e.request.url.startsWith(self.registration.scope))return;
+            e.respondWith((async()=>{
+              const cache=await caches.open(NAME),controller=new AbortController();
+              const timer=setTimeout(()=>controller.abort(),4500);
+              try{const r=await fetch(e.request,{signal:controller.signal});clearTimeout(timer);if(r.ok)try{await cache.put(e.request,r.clone())}catch{}return r}
+              catch{clearTimeout(timer);const hit=await cache.match(e.request)||await cache.match(e.request,{ignoreSearch:true});if(hit)return hit;if(e.request.mode==='navigate')return await cache.match('./index.html');return new Response('Offline: asset not cached',{status:503,headers:{'Content-Type':'text/plain'}})}
+            })());
+          });
+          '''.replace('__CORE__',json.dumps(core))
+          pathlib.Path('sw.js').write_text(sw)
+          PY
+      - name: Check Javascript syntax
+        run: |
+          node --check resort.js
+          node --check resort-data.js
+          node --check sw.js
+      - name: Install browser test tools
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+      - name: Test calendar to detail to map, pins, gestures and offline revisits
+        run: |
+          mkdir -p /tmp/cleo-report
+          python - <<'PY'
+          from pathlib import Path
+          import http.server,threading,json,traceback
+          from playwright.sync_api import sync_playwright,expect
+          class Handler(http.server.SimpleHTTPRequestHandler):
+            def log_message(self,*args):pass
+          server=http.server.ThreadingHTTPServer(('127.0.0.1',8765),Handler)
+          threading.Thread(target=server.serve_forever,daemon=True).start()
+          base='http://127.0.0.1:8765/'
+          out=Path('/tmp/cleo-report'); errors=[]; checks=[]
+          with sync_playwright() as pw:
+            browser=pw.chromium.launch()
+            context=browser.new_context(viewport={'width':393,'height':852},is_mobile=True,has_touch=True)
+            page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
+            try:
+              page.goto(base,wait_until='networkidle')
+              page.wait_for_function('!!window.CleoResort')
+              page.evaluate("CleoDays.selectDay('2026-10-13')")
+              page.wait_for_timeout(250)
+              if page.locator('#showPast').count():page.locator('#showPast').check()
+              snack=page.evaluate("CleoDays.data.events.find(e=>e.date==='2026-10-13'&&e.title==='Mittagssnacks')")
+              trigger=page.locator('[data-event-detail="'+snack['id']+'"]')
+              trigger.click();expect(page.locator('#ceDetail')).to_be_visible()
+              expect(page.locator('#ceDetail')).to_contain_text('herzhafte')
+              assert page.locator('#ceDetail img').count()==0
+              page.screenshot(path=str(out/'snacks-mobile.png'))
+              page.locator('#ceDetail [data-ce-locate]').click()
+              page.wait_for_timeout(250)
+              assert page.evaluate('CleoResort.state().selected')=='15'
+              assert not page.evaluate("document.querySelector('#ceDetail').open")
+              expect(page.locator('#cePlacePanel')).to_contain_text('Pool Restaurant & Bar')
+              checks.append('Calendar Mittagssnacks opens real text and maps to pool restaurant 15')
+              page.locator('[data-ce="close-map"]').click()
+              assert page.evaluate('CleoDays.getSelected()')=='2026-10-13'
+              fav=page.locator('[data-save="'+snack['id']+'"]');fav.click()
+              assert page.evaluate('id=>CleoDays.getState().favorites.includes(id)',snack['id'])
+              checks.append('Calendar selection and favorites remain usable')
+              boccia=page.evaluate("CleoDays.data.events.find(e=>e.date==='2026-10-13'&&e.title==='Boccia'&&e.time==='15:30')")
+              page.locator('[data-event-detail="'+boccia['id']+'"]').click()
+              expect(page.locator('#ceDetail')).to_contain_text('Kugeln')
+              expect(page.locator('#ceDetail')).to_contain_text('Tipps zum Mitmachen')
+              page.locator('#ceDetail [data-ce-locate]').click();page.wait_for_timeout(250)
+              assert page.evaluate('CleoResort.state().selected')=='17'
+              expect(page.locator('#cePlacePanel')).to_contain_text('einzelne Aktivitätsstation')
+              checks.append('Boccia guide and approximate beach area are connected')
+              page.locator('[data-ce="fit"]').click();page.wait_for_timeout(200)
+              page.screenshot(path=str(out/'map-mobile.png'))
+              page.locator('[data-ce-place="19"]').click();page.wait_for_timeout(200)
+              assert page.evaluate('CleoResort.state().selected')=='19'
+              page.locator('[data-ce-visit="19"]').click()
+              assert '19' in page.evaluate("JSON.parse(localStorage.getItem('cleo-explored-v1'))")
+              page.locator('#ceSearch').fill('Family')
+              page.locator('#ceResults [data-ce-find="14"]').click();page.wait_for_timeout(200)
+              assert page.evaluate('CleoResort.state().selected')=='14'
+              expect(page.locator('#cePlacePanel')).to_contain_text('Wasserball')
+              checks.append('Actual marker click, place search and visited-state persistence')
+              page.locator('[data-ce="fit"]').click();page.wait_for_timeout(200)
+              page.locator('[data-ce-cat="pool"]').click()
+              assert page.locator('#cePins .ce-pin:not([hidden]):not(.pool)').count()==0
+              before=page.evaluate('CleoResort.state().view.z')
+              page.locator('[data-ce="zoom-in"]').click()
+              assert page.evaluate('CleoResort.state().view.z')>before
+              page.locator('[data-ce="fit"]').click();page.wait_for_timeout(200)
+              stage=page.locator('#ceStage').bounding_box(); x=stage['x']+30;y=stage['y']+180
+              before=page.evaluate('CleoResort.state().view.x')
+              page.mouse.move(x,y);page.mouse.down();page.mouse.move(x+55,y+20,steps=5);page.mouse.up()
+              assert abs(page.evaluate('CleoResort.state().view.x')-before)>20
+              page.locator('[data-ce-layer="plan"]').click()
+              assert page.evaluate('CleoResort.state().layer')=='plan'
+              checks.append('Category filters, zoom, pointer drag and authentic-plan layer')
+              page.locator('[data-ce="close-map"]').click()
+              page.evaluate("CleoDays.navigate('food')");page.wait_for_timeout(250)
+              page.locator('.restaurant [data-ce-locate="19"]').click()
+              assert page.evaluate('CleoResort.state().selected')=='19'
+              checks.append('Restaurant card links to its correct map marker')
+              direct=context.new_page()
+              direct.goto(base+'#map?place=19&date=2026-10-14',wait_until='networkidle')
+              direct.wait_for_function('window.CleoResort?.state().selected==="19"')
+              assert direct.evaluate('CleoDays.getSelected()')=='2026-10-14'
+              direct.close();checks.append('Shareable location link with day selection')
+              page.evaluate('navigator.serviceWorker.ready')
+              page.wait_for_function('!!navigator.serviceWorker.controller')
+              page.wait_for_timeout(300)
+              context.set_offline(True)
+              page.reload(wait_until='networkidle')
+              page.wait_for_function('!!window.CleoResort')
+              page.evaluate("CleoResort.open('15')");page.wait_for_timeout(250)
+              assert page.evaluate('CleoResort.state().selected')=='15'
+              assert page.evaluate("caches.match(new Request(location.origin+'/assets/hotel-plan.webp'),{ignoreSearch:true}).then(Boolean)")
+              assert page.evaluate('id=>CleoDays.getState().favorites.includes(id)',snack['id'])
+              context.set_offline(False);checks.append('Offline reload retains map assets, program and saved favorites')
+              desktop=browser.new_page(viewport={'width':1440,'height':960})
+              desktop.goto(base,wait_until='networkidle');desktop.wait_for_function('!!window.CleoResort')
+              desktop.evaluate('CleoResort.open()');desktop.wait_for_timeout(300)
+              desktop.screenshot(path=str(out/'map-desktop.png'))
+              assert desktop.evaluate('CleoResort.state().view.rotated') is False
+              checks.append('Desktop map layout')
+              assert not errors,errors
+              (out/'tests.json').write_text(json.dumps({'passed':checks,'errors':errors},indent=2))
+              print(json.dumps({'passed':checks,'errors':errors},indent=2))
+            except Exception as e:
+              (out/'failure.txt').write_text(traceback.format_exc())
+              try:page.screenshot(path=str(out/'failure.png'))
+              except:pass
+              raise
+            finally:
+              browser.close();server.shutdown()
+          PY
+      - name: Save validation screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cleo-explorer-validation
+          path: /tmp/cleo-report/
+          retention-days: 3
+      - name: Publish the tested PWA changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name 'Cleo Days'
+          git config user.email '27174702+SteffanWolter@users.noreply.github.com'
+          git add index.html manifest.webmanifest sw.js
+          if ! git diff --cached --quiet; then
+            git commit -m 'Release: tested Cleo Explorer map, food descriptions and offline PWA'
+          fi
+          git pull --rebase origin main
+          git push origin HEAD:main
+          git push origin HEAD:gh-pages
+          gh api -X POST "repos/${{ github.repository }}/pages/builds"
+          echo "Published commit: $(git rev-parse HEAD)"

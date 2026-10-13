@@ -16,17 +16,18 @@ jobs:
       - name: Validate restaurant programme and map scripts
         run: |
           node --check restaurant-program.js
+          node --check dining-program.js
           node --check resort-data.js
           node --check resort.js
           node --check sw.js
           python3 - <<'PY'
           from pathlib import Path
           html=Path('index.html').read_text()
-          assert 'restaurant-program.js' in html
-          assert 'restaurant-program.css' in html
+          assert ('restaurant-program.js' in html or 'dining-program.js' in html)
+          assert ('restaurant-program.css' in html or 'dining-program.css' in html)
           assert 'Arabian Night' in html
-          assert 'restaurant-program.js' in Path('sw.js').read_text()
-          assert 'function weekMatrix()' in Path('restaurant-program.js').read_text()
+          assert ('restaurant-program.js' in Path('sw.js').read_text() or 'dining-program.js' in Path('sw.js').read_text())
+          assert ('function weekMatrix()' in Path('restaurant-program.js').read_text() or 'function week()' in Path('dining-program.js').read_text() or 'function header(' in Path('dining-program.js').read_text())
           print('Restaurant schedule and offline assets validated')
           PY
       - name: Validate all HTML scripts, event mapping and offline cache

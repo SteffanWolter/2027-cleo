@@ -59,11 +59,11 @@ h1{font-size:clamp(35px,6vw,59px);letter-spacing:-.07em;line-height:1.06;font-we
 </style>
 </head><body>
 <header class="top"><a href="./" class="back">← <span>Zurück zum Dashboard</span></a><span class="mark">cleo days.</span></header>
-<main><div class="eyebrow">CLEOPATRA · MAKADI BAY · EUER URLAUB</div><h1>Jedes Detail.<br>Ganz entspannt.</h1><p class="intro">Die Aushänge aus eurem Hotel als klare, einzeln lesbare Poster – und zu jedem Spiel eine kurze Einführung. Alle lesbaren Informationen sind direkt aus euren Fotos übertragen. Unklarheiten bleiben ausdrücklich gekennzeichnet.</p>
+<main><div class="eyebrow">CLEOPATRA · MAKADI BAY · EUER URLAUB</div><h1>Jedes Detail.<br>Ganz entspannt.</h1><p class="intro">Alle bekannten Hotel-Aushänge als eigenständig nachgebaute, scharf lesbare Poster – plus verständliche Spielregeln. Uhrzeiten und Preise sind aus den Hotelangaben übernommen. Unklare Stellen sind markiert.</p>
 <div class="tabs"><button class="on" data-tab="posters">Alle Poster</button><button data-tab="games">Spiele verstehen</button></div>
 <div class="controls"><input class="search" id="query" placeholder="Poster, Veranstaltung oder Spiel suchen …" aria-label="Suchen"></div>
 <div id="filters" class="filters"></div><div id="content"></div>
-<p class="footer">Diese Nachbauten sind lesbare Transkriptionen der Hotelplakate und keine amtlichen Dokumente des Hotels. Der Link „Originalfoto“ ermöglicht jederzeit den Abgleich. Lokale Programmänderungen werden nicht automatisch synchronisiert.</p>
+<p class="footer">Digitale Poster auf Basis eurer Hotelunterlagen. Sie sind keine offiziellen Hotelplakate. Lokale Programmänderungen werden nicht automatisch synchronisiert.</p>
 </main>
 <dialog class="modal" id="detail" aria-label="Poster und Erklärungen">
 <div class="sheetbar"><b id="modalLabel">Details</b><button id="close" aria-label="Schließen">×</button></div>
@@ -82,8 +82,8 @@ function showPoster(id){
  if(p.rows?.length)body+='<table class="poster-rows"><tbody>'+p.rows.map(r=>'<tr><td>'+esc(r.time)+'</td><td>'+esc(r.event)+'</td><td>'+esc(r.place)+'</td></tr>').join('')+'</tbody></table>';
  body+='<p class="body">'+esc(p.body)+'</p></article>';
  if(p.tip)body+='<div class="note"><strong>Gut zu wissen</strong><div>'+esc(p.tip)+'</div></div>';
- body+='<div class="actions"><a target="_blank" rel="noopener" class="action" href="./'+encodeURIComponent(p.photo)+'">Originalfoto ansehen ↗</a><button class="action primary" onclick="window.print()">Poster als PDF drucken ↗</button></div>';
- body+='<p style="color:#859192;font-size:11px">Quelle: Euer Foto '+esc(p.photo)+' · lesbarer Nachbau, nicht das offizielle Original.</p>';
+ body+='<div class="actions"><button class="action primary" onclick="window.print()">Poster als PDF speichern ↗</button></div>';
+ body+='<p style="color:#859192;font-size:11px">Eigener digitaler Nachbau aus den Hotelinformationen. Nicht vom Hotel herausgegeben; unbestätigte Details bleiben offen.</p>';
  openModal(body,p.title);
 }
 function showGame(id){

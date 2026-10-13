@@ -52,6 +52,7 @@ if(/shuttle zurück/.test(t))return {id:null,note:'Start außerhalb des Resorts.
 if(/padel/.test(t))return {id:'6',approx:true,note:'Markiert ist das Gym zur Reservierung. Der Padelplatz fehlt im PDF.'};
 if(/bogenschie|archery/.test(t))return {id:'8',approx:true,note:'Bereich aus dem Hotelplan. Aktuellen Treffpunkt bei den Tennisplätzen bestätigen.'};
 if(/bbq/.test(t))return {id:'17',approx:true,note:'Strandbereich; das genaue Dinner-Setup nennt der Plan nicht.'};
+if(/beach resort poolbar|beach resort pool bar|adults.only.poolbar|adults only pool bar/.test(t+' '+l))return {id:'18',approx:true,note:'Adults-Only-Poolbar im Beach Resort. Der Lageplan markiert den Bereich, nicht die einzelne Bar.'};
 if(/waterfront/.test(t+' '+l))return {id:'19'};
 if(/halfway|half way/.test(t+' '+l))return {id:'16',approx:true,note:'Umgebung des Activity Pools; Bar nicht exakt im PDF markiert.'};
 if(/soko/.test(l)||/abendbuffet|frühstücksbuffet|mittagsbuffet/.test(t))return {id:'3'};

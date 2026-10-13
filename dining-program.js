@@ -20,10 +20,10 @@ function schedule(date){
   var status=(dow===2||dow===5||dow===0)?"Vom Hotel bestätigt":"Genaues Motto offen";
   var soko=app.data.dinner[date]||"Motto erfragen";
   return [
-    {key:"waterfront",name:"Waterfront",subtitle:"Adults Only · direkt am Meer",title:topic,time:"Abends · Uhrzeit erfragen",status:status,focus:dow===2||dow===5||dow===0,place:"19",url:source.water,
+    {key:"waterfront",name:"Waterfront",subtitle:"Adults Only · direkt am Meer",title:topic,time:(date==="2026-10-13"||date==="2026-10-18")?"18:30 Uhr · laut Aushang":"Abends · Uhrzeit erfragen",status:(date==="2026-10-13"||date==="2026-10-18")?"Aktueller Hotel-Aushang":status,focus:dow===2||dow===5||dow===0,place:"19",url:source.water,
       intro:"Das Waterfront gehört zu eurem bezahlten Adults-Only-Upgrade. Das Hotel bestätigt täglich ein offenes Buffet mit wechselnden Themen. Zusätzlich À la carte außer Dienstag, Freitag und Sonntag.",
       info:dow===2?"Arabian Night ist das reguläre orientalische Themenbuffet am Dienstag, nicht das gesondert kostenpflichtige Strand-BBQ. Laut Hotel bleibt das Buffet an diesem Abend inklusive.":dow===5?"Freitag ist der Fisch- und BBQ-Themenabend direkt im Waterfront. Das ist nicht das extra Strand-BBQ für 35 € pro Person.":dow===0?"Sonntags Gala-Buffet mit besonderer Abendunterhaltung während des Essens.":"Das tägliche Buffet ist bestätigt. Themen wie italienisch oder asiatisch werden angeboten, aber der konkrete Wochentag ist nicht veröffentlicht.",
-      note:"Die Start- und Endzeit des Waterfront-Abendessens ist nicht sicher veröffentlicht."},
+      note:(date==="2026-10-13"||date==="2026-10-18")?"Der Beach-Resort-Abendaushang vom 12.–18. Oktober bestätigt den Beginn um 18:30 Uhr; Ende nicht ausgewiesen.":"Für dieses Datum liegt keine sichere Start- oder Endzeit aus einem aktuellen Aushang vor."},
     {key:"soko",name:"Soko",subtitle:"Hauptrestaurant",title:soko+" · Abendbuffet",time:"18:30–21:30 Uhr",status:"Hotel-Oktoberplan",focus:soko==="Gala",place:"3",url:source.soko,
       intro:"Das Soko ist das reguläre All-Inclusive-Hauptrestaurant mit Buffet und Live-Cooking.",
       info:"Das Oktober-Poster bestätigt für diesen Tag "+soko+". Der Themenname garantiert keine bestimmten Einzelgerichte.",
@@ -81,7 +81,7 @@ function calendarRefresh(date){
  if(!agenda)return;
  const active=main.querySelector('.filter.active')?.dataset.filter||'all',allowed=['all','food'].includes(active);
  const old=agenda.querySelector('#cdCalendarWaterfront');
- if(!allowed){old?.remove();return}
+ if(!allowed || main?.querySelector('[id^="event-"] [data-event-detail]') && app.data.events.some(e=>e.date===date&&e.resortArea==='adults-only'&&e.location?.includes('Waterfront'))){old?.remove();return}
  if(old&&old.dataset.cdDate===date)return;
  old?.remove();
  const evening=[...agenda.querySelectorAll('.agenda-label')].find(x=>x.textContent.trim()==='ABEND');

@@ -1,0 +1,75 @@
+name: Polish Cleo Explorer controls
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/refine-explorer.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+jobs:
+  polish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Refine navigation and small-screen map controls
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('resort.js');s=p.read_text()
+          if 'restore-nav-explorer2' not in s:
+            marker="function navigation(){"
+            assert marker in s
+            s=s.replace(marker,marker+"\n/* restore-nav-explorer2 */\nif(!mapOpen){const current=location.hash.slice(1).split('?')[0]||'today';for(const b of $$('#mobileNav [data-nav],#desktopNav [data-nav]'))b.classList.toggle('active',b.dataset.nav===current);const more=$('#mobileNav [data-action=menu]');if(more)more.classList.toggle('active',!$$('#mobileNav [data-nav]').some(b=>b.dataset.nav===current));}\n")
+            marker="mapOpen=true;selected=null;focusedEvent=null;"
+            assert marker in s
+            s=s.replace(marker,marker+"category='all';search='';$('#ceSearch').value='';$('#ceResults').hidden=true;$$('[data-ce-cat]').forEach(b=>b.classList.toggle('on',b.dataset.ceCat==='all'));")
+            s=s.replace("if(!moved)selectPlace(b.dataset.cePlace)","if(!moved||e.detail===0)selectPlace(b.dataset.cePlace)")
+            s=s.replace("search='';$('#ceSearch').value='';renderPanel();fit();","search='';$('#ceSearch').value='';$('#ceResults').hidden=true;renderPanel();fit();")
+          p.write_text(s)
+          p=Path('resort.css');s=p.read_text()
+          if 'selected-layer-explorer2' not in s:s+='\n/* selected-layer-explorer2: keep the layer control usable above an open place sheet */\n@media(max-width:780px){#ceMap:has(.ce-place-panel.has-place) .ce-layer{top:calc(176px + env(safe-area-inset-top));bottom:auto;max-width:calc(100% - 72px)}}\n'
+          p.write_text(s)
+          p=Path('index.html');p.write_text(p.read_text().replace('?v=explorer1','?v=explorer2'))
+          p=Path('sw.js');p.write_text(p.read_text().replace('cleo-days-explorer-20261013-v1','cleo-days-explorer-20261013-v2'))
+          PY
+          node --check resort.js
+          node --check sw.js
+      - name: Install browser tools
+        run: |
+          python -m pip install --quiet playwright PyYAML
+          python -m playwright install --with-deps chromium
+      - name: Rerun all integration and offline tests with regression checks
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml,subprocess
+          workflow=yaml.safe_load(Path('.github/workflows/activate-explorer.yml').read_text())
+          test=next(s['run'] for s in workflow['jobs']['release']['steps'] if s.get('name','').startswith('Test calendar'))
+          marker="checks.append('Category filters, zoom, pointer drag and authentic-plan layer')"
+          test=test.replace(marker,marker+"\n    page.locator('[data-ce-cat=\"pool\"]').click()\n    page.evaluate(\"CleoResort.open('15')\");page.wait_for_timeout(200)\n    assert page.locator('[data-ce-place=\"15\"]').is_visible()\n    page.locator('[data-ce-layer=\"plan\"]').click()\n    assert page.evaluate('CleoResort.state().layer')=='plan'\n    checks.append('Filtered direct location and layer switch with open place sheet')")
+          # Added Python lines must match the surrounding try-suite indentation.
+          test=test.replace('\n    page.locator', '\n    page.locator')
+          subprocess.run(['bash','-e','-c',test],check=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cleo-explorer-final-validation
+          path: /tmp/cleo-report/
+          retention-days: 3
+      - name: Publish verified refinements
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name 'Cleo Days'
+          git config user.email '27174702+SteffanWolter@users.noreply.github.com'
+          git add resort.js resort.css index.html sw.js
+          if ! git diff --cached --quiet; then git commit -m 'Polish: mobile map layers, location filters and navigation state'; fi
+          git pull --rebase origin main
+          git push origin HEAD:main
+          git push origin HEAD:gh-pages
+          gh api -X POST "repos/${{ github.repository }}/pages/builds"
+          echo "Published commit: $(git rev-parse HEAD)"

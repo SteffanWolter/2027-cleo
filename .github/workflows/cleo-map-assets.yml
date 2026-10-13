@@ -1,0 +1,59 @@
+name: Prepare authentic Cleopatra map
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/cleo-map-assets.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: python -m pip install --quiet PyMuPDF Pillow
+      - name: Extract only the plan area, preserving the hotel's geography
+        run: |
+          python - <<'PY'
+          import urllib.request, pathlib, json, io
+          import fitz
+          from PIL import Image
+          root=pathlib.Path('assets'); root.mkdir(exist_ok=True)
+          url='https://cms.odeontravel.rs/b2cDocuments/pdf/ALL%20INCLUSIVE%20HURGADA/Cleopatra%20Luxury%20AI%20concept%202024.pdf'
+          req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'})
+          blob=urllib.request.urlopen(req,timeout=60).read()
+          (root/'hotel-plan-source.pdf').write_bytes(blob)
+          doc=fitz.open(stream=blob,filetype='pdf'); page=doc[0]; w,h=page.rect.width,page.rect.height
+          clip=fitz.Rect(w*23/1447,h*322/1024,w*697/1447,h*815/1024)
+          pix=page.get_pixmap(matrix=fitz.Matrix(1600/clip.width,1600/clip.width),clip=clip,alpha=False)
+          image=Image.open(io.BytesIO(pix.tobytes('png')))
+          image.save(root/'hotel-plan.webp',quality=94,method=6)
+          page.get_pixmap(matrix=fitz.Matrix(2,2),alpha=False).save(str(root/'hotel-plan-reference.png'))
+          metadata={'source':url,'sourceLabel':'Hotelbroschüre / AI-Konzept 2024, Seite 1','cropFractions':[23/1447,322/1024,697/1447,815/1024],'width':image.width,'height':image.height,'embeddedImages':[(im[2],im[3]) for im in page.get_images(full=True)],'note':'Historical resort plan, not GPS or a live routing map. Hotspots manually aligned to its numbered legend.'}
+          (root/'hotel-plan-source.json').write_text(json.dumps(metadata,indent=2,ensure_ascii=False))
+          print(json.dumps(metadata,ensure_ascii=False))
+          PY
+      - name: Commit map source and preview
+        run: |
+          git config user.name 'Cleo Days'
+          git config user.email '27174702+SteffanWolter@users.noreply.github.com'
+          git add assets/hotel-plan*
+          if ! git diff --cached --quiet; then
+            git commit -m 'Assets: faithful map crop and source provenance from hotel PDF'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cleo-map-working-copy
+          path: |
+            *.html
+            *.css
+            *.js
+            *.webmanifest
+            *.svg
+            *.png
+            assets/
+          retention-days: 2

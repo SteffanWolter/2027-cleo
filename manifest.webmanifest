@@ -33,5 +33,18 @@
   "categories": [
     "travel",
     "lifestyle"
+  ],
+  "shortcuts": [
+    {
+      "name": "Hotelkarte",
+      "short_name": "Karte",
+      "url": "./#map",
+      "description": "Restaurants, Pools und Aktivitäten auf der Hotelkarte"
+    },
+    {
+      "name": "Heute im Resort",
+      "short_name": "Heute",
+      "url": "./#today"
+    }
   ]
 }

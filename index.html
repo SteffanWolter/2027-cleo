@@ -32,6 +32,7 @@
 
 </style>
 <link rel="stylesheet" href="./native.css?v=4"><link rel="manifest" href="./manifest.webmanifest"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="./resort.css?v=explorer1">
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" class="sprites" aria-hidden="true"><defs>
@@ -231,9 +232,11 @@ function tickClock(){now=egyptNow();$('#hotelClock').textContent=now.time;$('#ho
 setInterval(()=>{const oldDate=now.date;tickClock();const tick=now.date+now.time;if(tick!==lastTick){lastTick=tick;if(followToday&&now.date!==oldDate&&dateWithin(now.date)){selected=now.date;render()}else if(activeView==='today'&&selected===now.date&&!$('#imageDialog').open&&!$('#searchDialog').open&&!$('#eventPosterDialog').open){const y=window.scrollY;render();window.scrollTo({top:y,behavior:'instant'})}}},15000);
 render();lastTick=now.date+now.time;
 // On a Pages origin the companion files enable installability and offline revisits.
-if(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'){const link=document.createElement('link');link.rel='manifest';link.href='./manifest.webmanifest';document.head.appendChild(link);if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+if(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'){const link=document.createElement('link');link.rel='manifest';link.href='./manifest.webmanifest';document.head.appendChild(link);if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{})}
 // Explicit inspection surface for reproducible schedule tests; no external connections.
 window.CleoDays={data:D,getNow:egyptNow,getState:()=>state,getSelected:()=>selected,eventsFor,statusOf,selectDay,navigate,minutes,auditText,rawText,exportICS};
 </script>
 <script src="./native.js?v=4"></script>
+<script src="./resort-data.js?v=explorer1"></script>
+<script src="./resort.js?v=explorer1"></script>
 </body></html>

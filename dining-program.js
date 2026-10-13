@@ -65,6 +65,29 @@ function openDetail(key,date){
  document.getElementById("cdDialogBody").innerHTML='<div class="cd-dialog-hero"><div class="cd-dialog-bar"><span>CLEO DAYS · RESTAURANTS</span><button data-cd-close aria-label="Schließen">✕</button></div><small>'+safe(dayName(date))+' · '+safe(r.subtitle)+'</small><h2>'+safe(r.title)+'</h2><p>'+safe(r.intro)+'</p><b>'+safe(r.status)+'</b></div><div class="cd-dialog-inner"><div class="cd-facts"><div><span>Uhrzeit</span><strong>'+safe(r.time)+'</strong></div><div><span>Restaurant</span><strong>'+safe(venue)+'</strong></div></div><button class="cd-locate" data-cd-place="'+safe(r.place)+'">⌖&nbsp; Auf der Hotelkarte zeigen <span>↗</span></button><section><h3>Das erwartet euch</h3><p>'+safe(r.info)+'</p></section><div class="cd-info">'+safe(r.note)+'</div><p class="cd-source"><a href="'+safe(r.url)+'" target="_blank" rel="noopener">Offizielle Restaurantinformationen ↗</a> · <a href="'+safe(source.themes)+'" target="_blank" rel="noopener">Auskunft des Hotelmanagements ↗</a> · <a href="'+safe(source.operator)+'" target="_blank" rel="noopener">Reiseveranstalter ↗</a></p></div>';
  d.showModal();
 }
+function calendarWaterfront(date){
+ const x=schedule(date)[0];
+ return '<article id="cdCalendarWaterfront" class="event food cd-calendar-waterfront" data-cd-date="'+date+'">'+
+ '<div class="event-time" style="font-size:11px">ABEND<small>Uhrzeit offen</small></div><div class="event-line"></div><div class="event-content">'+
+ '<button type="button" class="event-card-trigger" data-cd-view="waterfront" data-cd-date="'+date+'" aria-label="Waterfront Themenbuffet und Details ansehen">'+
+ '<div class="event-title">'+safe(x.title)+' <span class="tag live">Waterfront · Adults Only</span></div>'+
+ '<div class="event-info">Waterfront Restaurant · Meerblick</div>'+
+ '<div class="event-note">Bei eurem Upgrade laut eurer Bestätigung inklusive; genaue Uhrzeit vor Ort erfragen.</div>'+
+ '<span class="poster-tap-hint">Buffetdetails ansehen ↗</span></button>'+
+ '<button type="button" class="ce-map-link" data-cd-place="19">⌖ Auf Karte</button></div><span aria-label="Uhrzeit ungeklärt" style="color:#6c816e;font-weight:700">?</span></article>'
+}
+function calendarRefresh(date){
+ const main=document.getElementById("main"),agenda=main?.querySelector('#agendaEvents');
+ if(!agenda)return;
+ const active=main.querySelector('.filter.active')?.dataset.filter||'all',allowed=['all','food'].includes(active);
+ const old=agenda.querySelector('#cdCalendarWaterfront');
+ if(!allowed){old?.remove();return}
+ if(old&&old.dataset.cdDate===date)return;
+ old?.remove();
+ const evening=[...agenda.querySelectorAll('.agenda-label')].find(x=>x.textContent.trim()==='ABEND');
+ if(evening)evening.insertAdjacentHTML('afterend',calendarWaterfront(date));
+ else agenda.insertAdjacentHTML('beforeend',calendarWaterfront(date));
+}
 function refresh(){
  const main=document.getElementById("main");if(!main)return;
  const date=app.getSelected(),strip=main.querySelector(".date-strip"),restaurant=main.querySelector(".restaurant-grid");
@@ -74,6 +97,7 @@ function refresh(){
  if(restaurant&&!main.querySelector("#cdFullRestaurants")){
   restaurant.insertAdjacentHTML("beforebegin",header(date));
  }
+ calendarRefresh(date);
 }
 let scheduled=false;
 function queue(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;refresh()})}
@@ -85,6 +109,8 @@ document.addEventListener("click",function(ev){
  else if(target.hasAttribute("data-cd-close"))document.getElementById("cdDialog")?.close();
  else {document.getElementById("cdDialog")?.close();const place=target.dataset.cdPlace;if(window.CleoResort?.open)window.CleoResort.open(place);else location.hash="map?place="+place+"&date="+app.getSelected()}
 },true);
+document.addEventListener('click',e=>{if(e.target.closest('[data-filter],[data-date],[data-nav],[data-open-day]'))setTimeout(queue,0)});
+document.addEventListener('change',e=>{if(e.target.id==='showPast')setTimeout(queue,0)});
 function boot(){const main=document.getElementById("main");if(!main)return;refresh();new MutationObserver(queue).observe(main,{childList:true})}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 window.CleoDining={schedule,open:openDetail,version:"2026-10-13"};

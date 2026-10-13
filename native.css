@@ -453,3 +453,29 @@ thead{background:#f5f7f7}
 @media(max-width:355px){.stat-grid{grid-template-columns:1fr 1fr}.stat{min-height:140px}.stat h3{font-size:15px}}
 @media(hover:none){.btn:hover,.iconbtn:hover{filter:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+
+/* Contextual activity posters in the day-by-day calendar */
+.event .event-content{min-width:0}
+.event .event-card-trigger{background:transparent;border:0;color:inherit;font:inherit;display:block;padding:0;text-align:left;width:100%;min-width:0;cursor:pointer;touch-action:manipulation;border-radius:9px}
+.event .event-card-trigger:hover .event-title{color:#175f5d}
+.event .event-card-trigger:focus-visible{outline:3px solid #8cc0b6;outline-offset:4px}
+.event .poster-tap-hint{margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:670;color:#366f69;background:#eaf3f0;border:1px solid #dfece7;padding:5px 10px;border-radius:8px;letter-spacing:0}
+.event .poster-tap-hint svg{width:13px;height:13px}
+.event .poster-tap-hint [aria-hidden]{font-size:12px;margin-left:2px}
+.event .event-card-trigger:active{opacity:.7}
+.event-poster-dialog{border:0;border-radius:24px;background:#f6f7f6;box-shadow:0 30px 100px #081b1fb0;padding:0;overflow:hidden;width:min(780px,96vw);height:min(95dvh,1050px);max-width:none;max-height:none;position:fixed}
+.event-poster-dialog::backdrop{background:#0f2427b5;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.event-poster-dialog-bar{height:54px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 16px 0 21px;background:#fff;border-bottom:1px solid #e7eae8}
+.event-poster-dialog-bar span{display:flex;align-items:baseline;gap:10px}
+.event-poster-dialog-bar b{font-size:17px;letter-spacing:-.07em;color:#243737}
+.event-poster-dialog-bar small{font-size:11px;color:#8d9a9a}
+.event-poster-dialog-bar button{min-height:35px;border:0;border-radius:11px;background:#eff2f1;padding:7px 11px;font-size:12px;color:#4d6363;font-weight:660}
+#eventPosterFrame{border:0;width:100%;height:calc(100% - 54px);display:block;background:#f6f7f6}
+@media(max-width:780px){
+ .event .event-card-trigger{min-height:52px}
+ .event .poster-tap-hint{font-size:10px;margin-top:9px;padding:5px 8px}
+ .event-poster-dialog{margin:0;left:0;right:0;bottom:0;top:auto;width:100vw;height:93dvh;border-radius:24px 24px 0 0;max-height:93dvh;box-shadow:0 -12px 45px #14252c45}
+ .event-poster-dialog-bar{height:57px;padding-left:19px;padding-right:14px}
+ #eventPosterFrame{height:calc(100% - 57px)}
+}

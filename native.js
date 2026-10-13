@@ -77,3 +77,37 @@ document.addEventListener('click',e=>{
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
+
+
+/* Cleo Days poster reader: accessible from every screen. */
+(()=>{
+ function addReader(){
+   const bar=document.querySelector('.top-actions');
+   if(bar&&!document.querySelector('#cleoPosterLink')){
+     const a=document.createElement('a'); a.href='./posters.html';a.id='cleoPosterLink';
+     a.title='Lesbare Hotelposter und Spielanleitungen';a.setAttribute('aria-label','Poster und Spielregeln öffnen');
+     a.innerHTML='<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M9 7h6M9 11h6"/></svg><span>Poster & Regeln</span>';
+     bar.insertBefore(a,bar.firstChild);
+   }
+   const nav=document.querySelector('#desktopNav');
+   if(nav&&!nav.querySelector('.poster-nav')){
+     const a=document.createElement('a');a.href='./posters.html';a.className='nav-item poster-nav';
+     a.innerHTML='<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><span>Poster & Spielregeln</span>';
+     nav.appendChild(a);
+   }
+   const hero=document.querySelector('#main .hero');
+   if(hero&&!document.querySelector('#cleoPosterCard')){
+     const d=document.createElement('a');d.id='cleoPosterCard';d.href='./posters.html';
+     d.innerHTML='<span class="poster-card-icon">▤</span><span><strong>Hotelposter & Spielregeln</strong><small>Alle Aushänge lesbar. Tipps zu Boccia, Wasserball und mehr.</small></span><span class="poster-card-arrow">↗</span>';
+     hero.insertAdjacentElement('afterend',d);
+   }
+ }
+ const css=document.createElement('style');
+ css.textContent='#cleoPosterLink{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:#315352;font-size:12px;font-weight:675;padding:9px 13px;border-radius:13px;background:#eef2f0;white-space:nowrap;min-height:42px}#cleoPosterLink svg{width:19px;height:19px}.poster-nav{display:flex;align-items:center;gap:12px;text-decoration:none;color:#6d7d7e}.poster-nav svg{width:20px;height:20px;flex-shrink:0}#cleoPosterCard{display:flex;align-items:center;gap:12px;text-decoration:none;background:#fff;border:1px solid #e7eae8;padding:16px 18px;border-radius:18px;margin:-8px 0 25px;box-shadow:0 2px 10px #1b353208;color:#1d3534}#cleoPosterCard strong{display:block;font-size:14px;font-weight:690;letter-spacing:-.025em}#cleoPosterCard small{display:block;font-size:11px;color:#7b8989;margin-top:3px;line-height:1.5}#cleoPosterCard .poster-card-icon{display:grid;place-items:center;flex:none;width:39px;height:39px;border-radius:12px;background:#eaf1ee;color:#2b635c;font-size:23px}#cleoPosterCard .poster-card-arrow{margin-left:auto;color:#72948c;font-size:20px}@media(max-width:780px){#cleoPosterLink{width:43px;height:43px;border-radius:50%;min-height:43px;justify-content:center;padding:0;background:#edf1ef}#cleoPosterLink span{display:none}#cleoPosterCard{margin-top:-5px;padding:14px 15px}#cleoPosterCard .poster-card-arrow{font-size:18px}}';
+ document.head.appendChild(css);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{
+   addReader();
+   const main=document.querySelector('#main');if(main)new MutationObserver(addReader).observe(main,{childList:true});
+   const nav=document.querySelector('#desktopNav');if(nav)new MutationObserver(addReader).observe(nav,{childList:true});
+ },{once:true}); else {addReader();const main=document.querySelector('#main');if(main)new MutationObserver(addReader).observe(main,{childList:true});const nav=document.querySelector('#desktopNav');if(nav)new MutationObserver(addReader).observe(nav,{childList:true});}
+})();

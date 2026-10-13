@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f7f5">
+<title>Aktivitäts-Poster · Cleo Days</title>
+<style>
+:root{--bg:#f6f7f6;--ink:#1c2b2c;--muted:#667477;--line:#e7ebea;--serif:Georgia,"Times New Roman",serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{background:var(--bg);color:var(--ink);margin:0;font:14px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text",Roboto,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,a{font:inherit;touch-action:manipulation}button{cursor:pointer}a{color:inherit}
+.wrap{max-width:775px;margin:0 auto;padding:25px 17px 65px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:19px}
+.brand{font-weight:760;letter-spacing:-.075em;font-size:22px}.caption{font-size:11px;color:#889596}
+.close{font-weight:670;border:1px solid #e6eae9;background:#fff;border-radius:13px;padding:11px 15px;color:#4d6061;min-height:42px}
+.poster{--tint:#304d49;--pale:#e8f1ed;--deep:#253e3a;background:#fff;border-radius:25px;overflow:hidden;box-shadow:0 12px 50px #1b343015;border:1px solid #e6e8e5}
+.poster.food{--tint:#786048;--pale:#f8f0e6;--deep:#594637}
+.poster.show{--tint:#67536b;--pale:#f4ecf4;--deep:#47384b}
+.poster.party{--tint:#755d7e;--pale:#f2ecf5;--deep:#453850}
+.poster.sport{--tint:#245e5d;--pale:#e8f3ef;--deep:#224b49}
+.poster.special{--tint:#9c654a;--pale:#f9eee6;--deep:#684737}
+.poster.kids{--tint:#90634d;--pale:#f9ece3;--deep:#714e3d}
+.poster.transfer{--tint:#426a7c;--pale:#eaf3f7;--deep:#2f5161}
+.poster.info{--tint:#506567;--pale:#edf2f1;--deep:#3d5254}
+.poster-head{background:var(--pale);min-height:335px;padding:27px clamp(25px,6vw,55px) 37px;overflow:hidden;position:relative}
+.poster-head:after{content:"";position:absolute;width:300px;height:300px;border:1px solid color-mix(in srgb,var(--tint) 16%,transparent);border-radius:50%;right:-105px;top:87px;box-shadow:0 0 0 39px color-mix(in srgb,var(--tint) 4%,transparent),0 0 0 84px color-mix(in srgb,var(--tint) 2%,transparent);pointer-events:none}
+.logo{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid color-mix(in srgb,var(--tint) 20%,transparent);padding-bottom:17px;font-size:11px;color:var(--tint);font-weight:790;letter-spacing:.16em}
+.logo .mini{font-size:10px;font-weight:520;letter-spacing:.055em}
+.eyebrow{position:relative;z-index:1;color:var(--tint);font-weight:700;letter-spacing:.12em;font-size:10px;text-transform:uppercase;margin:41px 0 9px}
+.poster-title{position:relative;z-index:1;font-size:clamp(38px,7vw,65px);letter-spacing:-.075em;font-weight:730;line-height:1.045;max-width:580px;margin:0;color:var(--deep);text-wrap:balance}
+.poster-sub{position:relative;z-index:1;margin:17px 0 0;color:var(--tint);font-size:14px;line-height:1.55;max-width:530px}
+.ornament{position:absolute;right:40px;bottom:32px;opacity:.15;width:115px;height:115px;fill:none;stroke:var(--tint);stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5}
+.poster-content{padding:31px clamp(23px,6vw,55px) 39px}
+.meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:28px}
+.meta{padding:17px;border-radius:15px;background:#f5f6f5;min-height:77px}
+.meta small{font-size:10px;letter-spacing:.07em;color:#8d9798;text-transform:uppercase;font-weight:720;display:block;margin-bottom:7px}
+.meta strong{display:block;color:#263b3b;font-size:17px;letter-spacing:-.035em;line-height:1.3}
+.meta span{font-size:12px;color:#708080;display:block;margin-top:3px}
+.section{margin:28px 0 0}
+.section h2{font-size:20px;letter-spacing:-.05em;margin:0 0 12px;font-weight:730}
+.section p{font-size:14px;line-height:1.75;color:#536366;margin:0}
+.section ol{margin:0;padding-left:20px;color:#536366;line-height:1.7;font-size:14px}
+.section li{margin-bottom:9px;padding-left:3px}
+.rule{border:0;border-top:1px solid #e7ebea;margin:27px 0}
+.tip{margin:10px 0;padding:14px 16px;background:#f0f5f3;border-radius:14px;color:#49665e;font-size:13px;line-height:1.65}
+.tip strong{display:block;margin-bottom:4px;color:#2c4d45}
+.caution{background:#fcf4e9;color:#88633b}
+.caution strong{color:#78512e}
+.poster-table{border-collapse:collapse;width:100%;font-size:12px}
+.poster-table tr+tr{border-top:1px solid #ebeeee}
+.poster-table td{padding:12px 5px;vertical-align:top}
+.poster-table td:first-child{font-weight:690;color:var(--tint);white-space:nowrap;width:28%}
+.poster-table td:last-child{color:#7c8988;width:28%}
+.footerline{border-top:1px solid #e6ebe8;margin-top:34px;padding-top:19px;font-size:11px;color:#81908d;line-height:1.6}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
+.action{border:0;display:inline-flex;justify-content:center;align-items:center;gap:8px;padding:12px 16px;border-radius:13px;background:#e9eeee;color:#3c5654;text-decoration:none;font-weight:670;font-size:12px;min-height:44px}
+.action.primary{background:#21383b;color:#fff}
+.loading{padding:70px 20px;text-align:center;color:#8a9693}
+@media(max-width:540px){.wrap{padding:13px 0 80px}.top{margin:0 17px 13px}.poster{border-radius:22px 22px 0 0;border-left:0;border-right:0;box-shadow:none}.poster-head{min-height:315px;padding:24px 25px 30px}.poster-head:after{right:-146px;top:123px}.eyebrow{margin-top:41px}.poster-title{font-size:clamp(38px,10vw,51px)}.poster-content{padding:23px 23px 42px}.meta{padding:14px;min-height:71px}.meta strong{font-size:15px}.section h2{font-size:20px}.ornament{right:19px;bottom:24px;opacity:.1;width:90px;height:90px}}
+@media print{html,body{background:#fff}.wrap{padding:0;max-width:100%}.top,.actions{display:none}.poster{border:0;box-shadow:none;border-radius:0}.poster-head{min-height:250px;break-inside:avoid}.poster-content{padding-top:18px}.section{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><span class="brand">cleo days.<span class="caption" style="display:block;letter-spacing:0;font-size:11px;font-weight:500">Aktivitäten · jedes Detail</span></span><button class="close" onclick="closeSheet()">Schließen ✕</button></div>
+<main id="content" aria-live="polite"><div class="loading">Dein Poster wird vorbereitet …</div></main>
+<div class="actions" id="actions"><button class="action primary" onclick="window.print()">Poster als PDF speichern ↗</button><a class="action" href="./posters.html">Alle Hotelposter</a></div>
+</div>
+<script>
+'use strict';
+const qs=new URLSearchParams(location.search);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;':'&quot;',"'":'&#39;'}[c]));
+const foodNames={'Soko':'Hauptrestaurant','Poolbar':'Snacks und Getränke','Lobbybar':'Frühaufsteher-Service'};
+const byId=(a,id)=>a.find(x=>x.id===id);
+function glyph(category){
+ const icons={
+ sport:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="3"/>',
+ food:'<circle cx="12" cy="12" r="9"/><path d="M3 12c5 4 13 4 18 0M8 5v4m8-4v4"/>',
+ show:'<path d="M3 20h18M6 20V6h12v14M8 6l4-4 4 4M9 11l3 3 3-3"/>',
+ party:'<path d="m4 20 5-18 13 13L4 20Zm5-10 6 7M3 5h.01M19 3h.01M21 9h.01"/>',
+ kids:'<path d="m12 2 2.9 6 6.6.9-4.7 4.6 1.1 6.6-5.9-3.2-5.9 3.2 1.1-6.6L2.5 9l6.6-1z"/>',
+ special:'<path d="M12 3 4 13h6l-2 8 12-12h-7l1-6z"/>',
+ transfer:'<path d="M3 16h18l-2-9H5l-2 9ZM7 16v3m10-3v3M6 11h12"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 10v7m0-10h.01"/>'
+ };
+ return '<svg class="ornament" viewBox="0 0 24 24" aria-hidden="true">'+(icons[category]||icons.info)+'</svg>';
+}
+function closeSheet(){
+ if(window.parent!==window){window.parent.postMessage({type:'cleo-close-poster'},location.origin)}
+ else if(history.length>1)history.back();
+ else location.href='./';
+}
+function matchGame(e,data){
+ const t=e.title.toLowerCase();
+ const rules=[
+ [/boccia/, 'boccia'], [/darts/, 'darts'], [/wasserball|waterpolo/,'waterpolo'],
+ [/beachvolleyball|beach volley/,'beachvolley'],[/flying yoga/,'flying'],[/step.aerobic/,'step'],[/wassergymnastik|water gym/,'aquagym'],
+ [/bogenschie|archery/,'archery'],[/padel/,'padel'],[/tennis/,'tennis'],[/morgengymnastik/,'morning'],
+ [/tanzkurs|club dance/,'dance'],[/olympic/,'olympics'],[/tombola/,'tombola'],[/quiz/,'quiz'],
+ [/mr\. cleopatra/,'mr'],[/mini disco/,'minidisco'],[/foam party/,'foam']
+ ];
+ const found=rules.find(([re])=>re.test(t));
+ return found?byId(data.games,found[1]):null;
+}
+function matchPoster(e,data){
+ const t=e.title.toLowerCase();
+ const rules=[
+ [/gala|abendbuffet|themenbuffet/,'soko'],[/bbq/,'bbq'],[/boccia|volley|darts|morgengym|flying yoga|tanzkurs|wasser(gym|ball)/,'morning'],
+ [/bogenschie/,'archery'],[/padel/,'padel'],[/shuttle|shopping/,'shuttle'],
+ [/fruit festival/,'fruit'],[/olympic/,'olympic'],[/disney/,'disney'],[/foam/,'foam'],
+ [/circus|schlager|pirates|oldies|karaoke|white dance|dj.s night|oriental show|mini disco|tombola|mr\. cleopatra|quiz|live.säng|live.duett|light technology|black & white/,'evening']
+ ];
+ const found=rules.find(([re])=>re.test(t));
+ return found?byId(data.posters,found[1]):null;
+}
+const expl={
+ 'Info Radio':'Kurze Durchsagen des Animationsteams zu Aktivitäten und Veranstaltungen. Das Plakat nennt keine feste Programmdauer.',
+ 'Yoga':'Sanftes Training für Beweglichkeit, Körperhaltung und Atmung. Die Übungen werden vom Hotelteam angeleitet. Bequeme Sportkleidung und Wasser mitnehmen.',
+ 'Eis & Gebäck':'Nachmittagsangebot an der Poolbar. Die genaue Auswahl kann wechseln.',
+ 'Frühaufsteher-Frühstück':'Kleines Frühstücksangebot am frühen Morgen in der Lobbybar.',
+ 'Frühstücksbuffet':'Reguläres Frühstücksbuffet im Soko-Hauptrestaurant.',
+ 'Spätaufsteher-Frühstück':'Späteres Frühstücksangebot an der Poolbar.',
+ 'Mittagsbuffet':'Mittagsbuffet im Soko-Hauptrestaurant.',
+ 'Mittagssnacks':'Snacks rund um die Poolbar. Die konkrete Auswahl ist nicht auf dem Aushang festgelegt.',
+ 'Spätes Abendessen':'Spätes Essen nur auf Anfrage. Vorher bei Rezeption oder Restaurant erkundigen.',
+ 'BBQ Dinner am Strand':'Strand-Barbecue mit gesondertem Aufpreis und Reservierung. Laut Poster dienstags ab 19 Uhr; 35 € pro Person.',
+ 'Disney Kids Carnival':'Kinderprogramm mit Karnevalsthema. Die tatsächlichen Spiele und Figuren werden vom Animationsteam festgelegt.',
+ 'Circus Show':'Zirkus-Themenaufführung im Amphitheater. Der genaue Ablauf steht nicht auf dem Hotelplakat.',
+ 'Pirates Show':'Piraten-Themenabend bzw. Bühnenshow. Die einzelnen Darbietungen werden auf dem Wochenplan nicht erläutert.',
+ 'Oriental Show':'Abendshow mit orientalischem Motto. Konkrete Tänze oder Darbietungen sind auf dem Aushang nicht aufgelistet.',
+ 'White Dance Show':'Tanzshow mit weißem Themenmotto. Der genaue Ablauf ist nicht weiter beschrieben.',
+ 'Light Technology Show':'Unterhaltung mit Licht- und Bühneneffekten; konkrete Technik und Dauer sind nicht angegeben.',
+ 'Black & White Party':'Party im Schwarz-Weiß-Motto. Für den Dresscode bieten sich schwarze oder weiße Kleidungsstücke an.',
+ 'Schlagerparty':'Party mit deutschsprachigen Schlagern; musikalische Auswahl kann wechseln.',
+ 'DJ’s Night':'Tanzabend mit DJ. Die genaue Musikrichtung steht nicht im Aushang.',
+ 'Oldies Party':'Musikparty mit älteren bekannten Hits.',
+ 'Karaoke Night':'Gäste können zu Musik mitsingen. Eine Titelliste oder Anmelderegeln sind nicht veröffentlicht.',
+ 'Live-Sänger':'Live-Musik an der Poolbar. Künstler oder Programm sind im Wochenplan nicht genannt.',
+ 'Live-Duett':'Zwei Künstler treten musikalisch gemeinsam auf. Genaues Repertoire unbekannt.'
+};
+function kind(e){return ['food','show','party','sport','kids','transfer','info','special'].includes(e.category)?e.category:'info'}
+function dateFormat(date){try{return new Intl.DateTimeFormat('de-DE',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'))}catch{return date}}
+function sourceInfo(e,data){
+ const src=(e.sources||[]).map(id=>data.events?null:null).filter(Boolean);
+ return (e.sources||[]).length?'Zeit und Ort aus dem vom Hotel veröffentlichten Tages-/Wochenprogramm beziehungsweise dem Veranstalter-Konzept.':'Selbst eingetragener Termin: Zeit und Ort stammen aus eurem persönlichen Plan.';
+}
+function fill(e,data){
+ const kindname=kind(e),game=matchGame(e,data),poster=matchPoster(e,data);
+ const eventTitle=e.title;
+ const date=dateFormat(e.date);
+ let intro=game?.intro||expl[eventTitle]||e.note||(
+  kindname==='food'?'Essensangebot im Hotel. Verbindlich sind die jeweils ausgehängten Zeiten und Menüangebote.':
+  kindname==='transfer'?'Shuttle-/Transferangebot laut Hotelprogramm. Reservierung, Mindestteilnehmerzahl und Rückfahrzeiten vor Abfahrt prüfen.':
+  kindname==='show'||kindname==='party'?'Abendunterhaltung des Hotels. Der konkrete Ablauf wurde auf der Infowand nicht näher beschrieben.':
+  'Programmpunkt aus dem Tageskalender des Cleopatra Luxury Resort Makadi Bay.'
+ );
+ const price=e.price!=null?String(e.price)+' €'+(e.category==='food'&&e.paid?' / Person':''):(e.paid?'Kostenpflichtig':null);
+ const pNote=poster&&poster.id!=='morning'?poster.body:null;
+ const rows=[];
+ if(poster?.id==='soko'){
+  const d=String(e.date.slice(-2))+'.'+e.date.slice(5,7)+'.'+e.date.slice(0,4);
+  const r=poster.rows.find(x=>x.time===d);
+  if(r)rows.push(r);
+ }else if(poster&&['bbq','fruit','olympic','disney','foam','shuttle','archery'].includes(poster.id)){
+  rows.push(...poster.rows);
+ }
+ const note=String(e.note||'').trim();
+ const desc=String(intro||'').trim();
+ let html='<article class="poster '+kindname+'"><header class="poster-head"><div class="logo"><span>◈ CLEOPATRA</span><span class="mini">MAKADI BAY · 2026</span></div><p class="eyebrow">'+esc(kindname==='food'?'Genießen':kindname==='sport'?'Aktiv sein':kindname==='transfer'?'Entdecken':kindname==='kids'?'Für kleine Gäste':kindname==='special'?'Besonderes Erlebnis':'Heute erleben')+'</p><h1 class="poster-title">'+esc(eventTitle)+'</h1><p class="poster-sub">'+esc(date)+' · '+esc(e.location||'Im Resort')+'</p>'+glyph(kindname)+'</header><div class="poster-content"><div class="meta-grid"><div class="meta"><small>Beginn</small><strong>'+esc(e.time)+' Uhr</strong><span>'+ (e.end?'Ende '+esc(e.end)+' Uhr':'Endzeit nicht veröffentlicht') +'</span></div><div class="meta"><small>Treffpunkt</small><strong>'+esc(e.location||'Bitte nachfragen')+'</strong><span>Cleopatra Luxury Resort</span></div></div><section class="section"><h2>Was erwartet euch?</h2><p>'+esc(desc)+'</p></section>';
+ if(note&&note!==desc)html+='<div class="tip"><strong>Hinweis des Hotels</strong>'+esc(note)+'</div>';
+ if(price)html+='<div class="tip caution"><strong>Zusätzlicher Preis</strong>'+esc(price)+' — vor Ort bestätigen.</div>';
+ if(e.request)html+='<div class="tip caution"><strong>Nur auf Anfrage</strong>Vorher bei Rezeption oder Guest Relations anmelden.</div>';
+ if(game){
+  html+='<section class="section"><h2>So funktioniert es</h2><p>'+esc(game.rules)+'</p></section>';
+  html+='<section class="section"><h2>Tipps für Anfänger</h2><ol>'+game.tips.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol></section>';
+  html+='<div class="tip"><strong>Was ihr mitbringen solltet</strong>'+esc(game.bring)+'</div>';
+ }
+ if(rows.length){
+  html+='<section class="section"><h2>Details vom Hotelposter</h2><table class="poster-table"><tbody>'+rows.map(r=>'<tr><td>'+esc(r.time)+'</td><td>'+esc(r.event)+'</td><td>'+esc(r.place)+'</td></tr>').join('')+'</tbody></table></section>';
+ }
+ if(pNote&&pNote!==desc&&pNote!==note)html+='<div class="tip"><strong>Zusätzliche Hotelinformation</strong>'+esc(pNote)+'</div>';
+ if(e.uncertain)html+='<div class="tip caution"><strong>Angaben widersprechen sich</strong>Bitte Beginn/Ende beim Hotel nachfragen.</div>';
+ html+='<div class="footerline"><strong>Quelle:</strong> '+esc(sourceInfo(e,data))+'<br>Dieses Blatt ist eine eigenständig gestaltete digitale Rekonstruktion, kein offizielles Hotelplakat. Fehlende Programmdetails werden nicht ergänzt.</div></div></article>';
+ document.querySelector('#content').innerHTML=html;
+ document.title=e.title+' · Cleo Days';
+}
+async function boot(){
+ const id=qs.get('event');
+ if(!id){document.querySelector('#content').innerHTML='<div class="loading">Kein Veranstaltungstermin ausgewählt.</div>';return}
+ try{
+  const [rh,rp]=await Promise.all([fetch('./index.html',{cache:'no-store'}),fetch('./posters.html',{cache:'no-store'})]);
+  if(!rh.ok||!rp.ok)throw new Error('Dateien können nicht gelesen werden');
+  const html=await rh.text(),posterHtml=await rp.text();
+  const parser=new DOMParser();
+  const doc=parser.parseFromString(html,'text/html'),pdoc=parser.parseFromString(posterHtml,'text/html');
+  const dataset=JSON.parse(doc.querySelector('#cleoData').textContent);
+  const guides=JSON.parse(pdoc.querySelector('#poster-data').textContent);
+  const ev=dataset.events.find(x=>x.id===id);
+  if(!ev)throw new Error('Für diese Veranstaltung liegt kein bestätigter Kalendereintrag vor.');
+  fill(ev,guides);
+ }catch(err){
+  document.querySelector('#content').innerHTML='<div class="loading">Das Poster konnte nicht geladen werden.<br>'+esc(err.message)+'</div>';
+ }
+}
+boot();
+</script></body></html>

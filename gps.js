@@ -11,7 +11,7 @@ const KEY='cleo-location-when-map-open-v1';
 const lat0=26.9864,lon0=33.9045,cos0=Math.cos(lat0*Math.PI/180);
 const EARTH_LON=111320*cos0,EARTH_LAT=111320;
 const $=s=>document.querySelector(s);
-let enabled=false,watchId=null,latest=null,stage=null,world=null,marker=null,ring=null,toggle=null,status=null,active=false,blocked=false,awaiting=false,lastCenter=false;
+let enabled=false,watchId=null,latest=null,stage=null,world=null,marker=null,ring=null,toggle=null,centerButton=null,status=null,active=false,blocked=false,awaiting=false,lastCenter=false;
 try{enabled=localStorage.getItem(KEY)==='1'}catch{}
 const map=()=>$('#ceMap');
 const isOpen=()=>Boolean(map()&&!map().hidden&&!document.hidden);
@@ -38,6 +38,7 @@ function updateButton(){
 function clearVisual(){
  if(marker)marker.hidden=true;
  if(ring)ring.hidden=true;
+ if(centerButton)centerButton.hidden=true;
 }
 function suspend(){
  if(watchId!==null){try{navigator.geolocation.clearWatch(watchId)}catch{}watchId=null}
@@ -64,13 +65,13 @@ function showFix(position){
  // Ring is a visual approximation, not a navigationally accurate boundary.
  const radius=Math.min(300,Math.max(15,accuracy*1.15));
  ring.style.width=(2*radius)+'px';ring.style.height=(2*radius)+'px';ring.hidden=false;
+ if(centerButton)centerButton.hidden=false;
  const stale=Date.now()-latest.time>120000;
  statusText((stale?'Letztes GPS-Signal':'GPS aktiv')+' · ±'+Math.round(accuracy)+' m · Position auf der Illustration ungefähr'+(accuracy>80?' · schwaches Signal':''),accuracy>80||stale);
  if(!lastCenter&&isOpen()&&v.z&&accuracy<65){
   lastCenter=true;
-  // Do not override the existing map controls or map orientation.
-  const gpsButton=toggle;
-  gpsButton?.classList.add('has-fix');
+  window.CleoResort?.centerWorld?.(p.x,p.y);
+  toggle?.classList.add('has-fix');
  }
 }
 function onError(error){
@@ -118,6 +119,13 @@ function mount(){
  toggle.setAttribute('aria-pressed',String(enabled));
  toggle.innerHTML='<svg class="ce-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3"/></svg><span class="ce-gps-button-caption">GPS aus</span>';
  controls.insertAdjacentElement('afterbegin',toggle);
+ centerButton=document.createElement('button');
+ centerButton.id='ceGpsCenter';centerButton.className='ce-icon-button';centerButton.type='button';
+ centerButton.hidden=true;centerButton.setAttribute('aria-label','Eigenen GPS-Standort auf der Karte zentrieren');
+ centerButton.title='Zu meinem Standort springen';
+ centerButton.innerHTML='<svg class="ce-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="5"/></svg>';
+ toggle.insertAdjacentElement('afterend',centerButton);
+ centerButton.addEventListener('click',()=>{if(!latest)return;const p=toSchematic(latest.latitude,latest.longitude);window.CleoResort?.centerWorld?.(p.x,p.y)});
  const tools=$('#ceMap .ce-map-tools');
  status=document.createElement('div');
  status.id='ceGpsStatus';status.setAttribute('role','status');status.setAttribute('aria-live','polite');

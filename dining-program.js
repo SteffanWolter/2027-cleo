@@ -67,7 +67,7 @@ function openDetail(key,date){
 }
 function calendarWaterfront(date){
  const x=schedule(date)[0];
- return '<article id="cdCalendarWaterfront" class="event food cd-calendar-waterfront" data-cd-date="'+date+'">'+
+ return '<article id="cdCalendarWaterfront" class="event food cleo-event-adults cd-calendar-waterfront" data-cd-date="'+date+'">'+
  '<div class="event-time" style="font-size:11px">ABEND<small>Uhrzeit offen</small></div><div class="event-line"></div><div class="event-content">'+
  '<button type="button" class="event-card-trigger" data-cd-view="waterfront" data-cd-date="'+date+'" aria-label="Waterfront Themenbuffet und Details ansehen">'+
  '<div class="event-title">'+safe(x.title)+' <span class="tag live">Waterfront · Adults Only</span></div>'+
@@ -79,12 +79,16 @@ function calendarWaterfront(date){
 function calendarRefresh(date){
  const main=document.getElementById("main"),agenda=main?.querySelector('#agendaEvents');
  if(!agenda)return;
- const active=main.querySelector('.filter.active')?.dataset.filter||'all',allowed=['all','food'].includes(active);
+ const active=main.querySelector('.filter.active')?.dataset.filter||'all';
  const old=agenda.querySelector('#cdCalendarWaterfront');
- if(!allowed || main?.querySelector('[id^="event-"] [data-event-detail]') && app.data.events.some(e=>e.date===date&&e.resortArea==='adults-only'&&e.location?.includes('Waterfront'))){old?.remove();return}
- if(old&&old.dataset.cdDate===date)return;
+ if(!['all','food'].includes(active)){old?.remove();return}
+ const hasActual=app.data.events.some(e=>e.date===date&&e.resortArea==='adults-only'&&/Waterfront/.test(e.location||''));
+ if(hasActual){old?.remove();return}
+ if(old?.dataset.cdDate===date)return;
  old?.remove();
- const evening=[...agenda.querySelectorAll('.agenda-label')].find(x=>x.textContent.trim()==='ABEND');
+ const adult=agenda.querySelector('#cleo-zone-adult-evening');
+ if(adult){adult.querySelector('.cleo-zone-empty')?.remove();adult.insertAdjacentHTML('beforeend',calendarWaterfront(date));return}
+ const evening=[...agenda.querySelectorAll('.agenda-label')].find(x=>x.textContent.includes('ABEND'));
  if(evening)evening.insertAdjacentHTML('afterend',calendarWaterfront(date));
  else agenda.insertAdjacentHTML('beforeend',calendarWaterfront(date));
 }

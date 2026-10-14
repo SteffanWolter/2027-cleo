@@ -22,3 +22,8 @@
  #ceGpsStatus{margin-top:6px;max-width:100%;font-size:10px;padding:7px 9px;line-height:1.3}
 }
 @media(prefers-reduced-motion:reduce){.ce-gps-accuracy,#ceGpsMarker{transition:none!important}}
+
+/* Keep Android GPS toggle clickable when the location status spans two lines. */
+#ceGpsStatus{pointer-events:none}
+#ceMap .ce-map-controls{z-index:20}
+@media(max-width:780px){#ceGpsStatus{width:calc(100% - 55px);max-width:calc(100% - 55px)}}

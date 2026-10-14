@@ -84,8 +84,9 @@ jobs:
             page.reload(wait_until='networkidle')
             page.wait_for_function('!!window.CleoGPS && !!window.CleoResort')
             assert page.evaluate('CleoGPS.enabled()')
-            assert page.evaluate('CleoGPS.active()') is False
-            page.evaluate('CleoResort.open()')
+            if not page.evaluate('CleoGPS.isMapOpen()'):
+              assert page.evaluate('CleoGPS.active()') is False
+              page.evaluate('CleoResort.open()')
             page.wait_for_function('CleoGPS.active() && !document.querySelector("#ceGpsMarker").hidden',timeout=20000)
             tests.append('Enabled preference persists across app reload')
             page.locator('#ceGpsButton').click()

@@ -64,6 +64,14 @@ const art=$('#ceArt');art.setAttribute('viewBox',`0 0 ${view.w} ${view.h}`);art.
 const world=$('#ceWorld');world.style.width=view.w+'px';world.style.height=view.h+'px';view.min=Math.min((stage.clientWidth-60)/view.w,(stage.clientHeight-75)/view.h);view.min=Math.max(.2,view.min);view.z=view.min;view.x=(stage.clientWidth-view.w*view.z)/2;view.y=(stage.clientHeight-view.h*view.z)/2-8;renderPins();if(selected&&center!==true)focusPlace(selected);else paint();
 }
 function focusPlace(id){const p=placeBy(id);if(!p)return;const c=xy(p),s=$('#ceStage');view.z=Math.min(2,Math.max(view.min*1.65,.8));view.x=s.clientWidth*(innerWidth>780?.45:.5)-c.x*view.z;view.y=s.clientHeight*.34-c.y*view.z;paint()}
+function centerWorldPoint(x,y){
+ const stage=$('#ceStage');if(!stage?.clientWidth)return;
+ const c=view.rotated?{x:732-y,y:x}:{x,y};
+ view.z=Math.min(2.3,Math.max(view.z,view.min*1.9));
+ view.x=stage.clientWidth*.5-c.x*view.z;
+ view.y=stage.clientHeight*.42-c.y*view.z;
+ paint();
+}
 function zoom(f,cx,cy){const s=$('#ceStage');cx??=s.clientWidth/2;cy??=s.clientHeight*.4;const next=Math.min(3.8,Math.max(view.min*.75,view.z*f)),r=next/view.z;view.x=cx-(cx-view.x)*r;view.y=cy-(cy-view.y)*r;view.z=next;paint()}
 function initGestures(){
 const s=$('#ceStage'),local=e=>{const r=s.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}},start=()=>{const a=[...pointers.values()];gesture=a.length>1?{type:'pinch',dist:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y),cx:(a[0].x+a[1].x)/2,cy:(a[0].y+a[1].y)/2}:{type:'pan',x:a[0]?.x,y:a[0]?.y}};
@@ -132,5 +140,5 @@ if(mapOpen&&(b.dataset.nav||b.dataset.action==='menu'))hideMap();
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mapOpen&&!$('#ceDetail').open){hideMap();e.preventDefault()}});addEventListener('popstate',route);addEventListener('hashchange',route);
 }
 createUI();events();attach();new MutationObserver(scheduleAttach).observe($('#main'),{childList:true,subtree:true});new MutationObserver(scheduleAttach).observe($('#mobileNav'),{childList:true});new MutationObserver(scheduleAttach).observe($('#desktopNav'),{childList:true});new MutationObserver(scheduleAttach).observe($('#moreMenu'),{childList:true});route();
-window.CleoResort={open:showMap,close:hideMap,detail:openDetail,resolve:R.resolve,places:R.places,fit,zoom,state:()=>({mapOpen,selected,layer,view:{...view},date:date()})};
+window.CleoResort={open:showMap,close:hideMap,detail:openDetail,resolve:R.resolve,places:R.places,fit,zoom,centerWorld:centerWorldPoint,state:()=>({mapOpen,selected,layer,view:{...view},date:date()})};
 })();

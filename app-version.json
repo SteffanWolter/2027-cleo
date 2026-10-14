@@ -1,6 +1,8 @@
 {
-  "version": "2026-10-14-final-zones-v1",
+  "version": "cleo-de5d9a69c994",
   "published": "2026-10-14",
   "message": "Getrennte, farbige Adults-Only- und Hauptresort-Programme in jedem Urlaubstag; Android-PWA-Auto-Updates.",
-  "notes": "Neue Hotelprogramme werden beim nächsten Online-Öffnen bzw. bei erneuter Aktivierung übernommen."
+  "notes": "Neue Hotelprogramme werden beim nächsten Online-Öffnen bzw. bei erneuter Aktivierung übernommen.",
+  "source_commit": "de5d9a69c994089cb1a1d9146aa4afa390bb5c6d",
+  "published_by": "GitHub Actions on main push"
 }

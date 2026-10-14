@@ -70,6 +70,16 @@ jobs:
             assert all(0<v<1000 for v in coords),coords
             assert page.locator('#ceGpsStatus').is_visible()
             page.screenshot(path='/tmp/cleo-gps-qa/gps-mobile.png')
+            assert page.locator('#ceGpsCenter').is_visible()
+            page.evaluate('CleoResort.zoom(1.22)')
+            page.locator('#ceGpsCenter').click()
+            centered=page.evaluate("""()=>{
+              const v=CleoResort.state().view,el=document.querySelector('#ceGpsMarker'),stage=document.querySelector('#ceStage');
+              const x=parseFloat(el.style.left)*v.z+v.x;
+              return {screenX:x,expected:stage.clientWidth*.5}
+            }""")
+            assert abs(centered['screenX']-centered['expected'])<3,centered
+            tests.append('Recenter button pans back to the current GPS fix')
             tests.append('Permission-granted watch projects approximate blue marker and shows accuracy')
             page.evaluate('CleoResort.close()')
             page.wait_for_timeout(120)

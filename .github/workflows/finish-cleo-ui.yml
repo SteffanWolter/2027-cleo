@@ -1,0 +1,55 @@
+name: Finish Cleo UI
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/finish-cleo-ui.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  finish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Remove internal audits and preserve both hotel calendars
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          p=Path('index.html')
+          s=p.read_text()
+          s=s.replace('<div class="mt"><button class="btn" data-nav="audit">'+chr(36)+'{icon(\'check\')}Vollständigkeitsprüfung öffnen</button></div>','')
+          s=s.replace('14 / 14 Originalfotos archiviert','Hotelinformationen aufbereitet')
+          s=s.replace('V2 · alle sichtbaren Themen abgeglichen · offene Angaben einzeln markiert','Hotelprogramme und aktuelle Hinweise')
+          s=s.replace('VOLLSTÄNDIGKEIT · VERSION 2','HOTELINFORMATIONEN')
+          s=s.replace('14 von 14 Fotos sind enthalten. Das ist eine Archivquote, keine 100-%-Garantie für unlesbare Inhalte oder die heutige Durchführung.','Programme stammen aus den Aushängen; kurzfristige Änderungen sind möglich.')
+          s=s.replace('<div class="eyebrow">ORIGINALFOTOS</div><strong>14 / 14</strong><small>vollständig im HTML archiviert</small>','<div class="eyebrow">QUELLEN</div><strong>Hotel</strong><small>Informationen aus dem Resort</small>')
+          s=s.replace('Erfasste Inhalte mit offenen Stellen','Zusätzliche Hotelinformationen')
+          s=s.replace('Prüfbericht Version 2','Hotelinformationen')
+          s=s.replace('14/14 Originalfotos archiviert; keine 100-%-Text- oder Verfügbarkeitsgarantie.','Hotelprogramm mit bekannten Einschränkungen.')
+          a="if(selected===now.date&&!showPast)list=list.filter(e=>e.resortArea==='adults-only'||!['past','pastday'].includes(statusOf(e)));"
+          b="if(selected===now.date&&!showPast)list=list.filter(e=>minutes(e.time)>=1080||!['past','pastday'].includes(statusOf(e)));"
+          assert a in s
+          s=s.replace(a,b)
+          assert 'cleo-zone-main' in s and 'cleo-zone-adults' in s
+          assert '14 / 14 Originalfotos archiviert' not in s
+          assert chr(36)+'{auditBanner()}' not in s
+          p.write_text(s)
+          import re,tempfile,json
+          for n,(_,script) in enumerate(re.findall(r'(<script\b[^>]*>)(.*?)</script>',s,re.S)):
+            if not script.strip() or script.strip().startswith('{'):continue
+            filename=Path(tempfile.gettempdir())/('cleo-'+str(n)+'.js')
+            filename.write_text(script)
+            subprocess.run(['node','--check',str(filename)],check=True)
+          print('User-facing audit banner removed; both evening calendars retain all shows.')
+          PY
+      - name: Push finished UI
+        run: |
+          git config user.name 'Cleo Days'
+          git config user.email '27174702+SteffanWolter@users.noreply.github.com'
+          git add index.html
+          git commit -m 'UI: clear audit clutter and show both resort evening programs'
+          git pull --rebase origin main
+          git push origin HEAD:main

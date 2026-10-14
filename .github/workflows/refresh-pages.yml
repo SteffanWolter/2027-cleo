@@ -21,13 +21,43 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: true
-
-      - name: Fast-forward GitHub Pages branch
-        run: |
-          git push origin HEAD:gh-pages
-
-      - name: Request a GitHub Pages build
+      - name: Stamp release and publish latest tested code
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
+          git config user.name 'Cleo Days'
+          git config user.email '27174702+SteffanWolter@users.noreply.github.com'
+          git fetch origin main gh-pages
+          git checkout -B live origin/main
+          export SOURCE_SHA=$(git rev-parse HEAD)
+          python3 - <<'PY'
+          import json,os,pathlib,re
+          sha=os.environ['SOURCE_SHA'][:12]
+          version='cleo-'+sha
+          p=pathlib.Path('index.html');html=p.read_text()
+          assert '<meta name="cleo-app-version"' in html
+          html=re.sub(r'(<meta name="cleo-app-version" content=")[^"]*(")',lambda m:m.group(1)+version+m.group(2),html)
+          static=('native.css','native.js','resort.css','resort.js','resort-data.js','dining-program.css','dining-program.js','pwa-update.js')
+          for asset in static:
+              html=re.sub(r'((?:src|href)="\./'+re.escape(asset)+r')(?:\?v=[^"]*)?(" )',lambda m:m.group(1)+'?v='+version+m.group(2),html)
+              html=re.sub(r'((?:src|href)="\./'+re.escape(asset)+r')(?:\?v=[^"]*)?(")',lambda m:m.group(1)+'?v='+version+m.group(2),html)
+          p.write_text(html)
+          sw=pathlib.Path('sw.js');code=sw.read_text()
+          code,n=re.subn(r"const NAME='[^']+'", "const NAME='cleo-days-auto-"+sha+"'",code,count=1)
+          assert n==1
+          sw.write_text(code)
+          manifest=pathlib.Path('app-version.json');content=json.loads(manifest.read_text())
+          content.update({'version':version,'source_commit':os.environ['SOURCE_SHA'],'published_by':'GitHub Actions on main push'})
+          manifest.write_text(json.dumps(content,ensure_ascii=False,indent=2)+'\n')
+          print('Cleo Days release:',version)
+          PY
+          git add index.html sw.js app-version.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Build: auto-version Cleo Days PWA from ${SOURCE_SHA:0:12}"
+          fi
+          git pull --rebase origin main
+          git push origin HEAD:main
+          git push origin HEAD:gh-pages
           gh api -X POST "repos/${{ github.repository }}/pages/builds"
+          echo "Published $(git rev-parse HEAD)"

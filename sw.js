@@ -1,5 +1,5 @@
 /* Cleo Explorer: offline shell, original plan and map. No personal data leaves the browser. */
-const NAME='cleo-days-auto-79a0c72af091';
+const NAME='cleo-days-auto-8e4569f92769';
 const CORE=["./","./index.html","./native.css","./native.js","./manifest.webmanifest","./icon.svg","./icon-192.png","./icon-512.png","./posters.html","./event.html","./resort.css","./resort-data.js","./resort.js","./dining-program.css","./dining-program.js","./pwa-update.js","./app-version.json","./assets/resort-map.svg","./assets/hotel-plan.webp"];
 self.addEventListener('install',e=>e.waitUntil(caches.open(NAME).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(a=>Promise.all(a.filter(n=>n.startsWith('cleo-days-')&&n!==NAME).map(n=>caches.delete(n)))).then(()=>self.clients.claim())));

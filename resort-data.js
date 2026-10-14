@@ -33,8 +33,9 @@ const rows=[
 [21,'Wassersport-Center','Wassersport','beach',634,92,'sail','Wassersportbereich laut Hotelplan. Angebote, Bedingungen und Preise vor Ort erfragen.'],
 [22,'Steg & Marina','Steg','beach',982,355,'anchor','Hoteleigener Steg über das Riff. Wetterbedingte Sperrungen und Hinweise der Mitarbeiter gehen immer vor.']
 ];
-const places=rows.map(([id,title,short,category,x,y,icon,description])=>({id:String(id),title,short,category,x,y,icon,description}));
-const categories={all:['Alles','map'],food:['Essen','fork'],pool:['Pools','waves'],sport:['Sport','activity'],beach:['Strand','sun'],show:['Shows','ticket'],service:['Service','door'],stay:['Adults Only','bed'],kids:['Kinder','spark']};
+const extraPlaces=[{"id":"23","title":"Adults-Only-Poolbar · Treffpunkt","short":"Adults-Poolbar","category":"bar","x":795,"y":480,"icon":"fork","approx":true,"parent":"18","description":"Hier finden die Musik-, Karaoke- und Cocktailabende des Beach Resorts statt. Die einzelne Barposition ist im Hotelplan nicht markiert: dieser Pin zeigt nur die ungefähre Nähe des Adults-Only-Bereichs."},{"id":"24","title":"Sky Lounge · 3. Etage","short":"Sky Lounge","category":"bar","x":755,"y":492,"icon":"sun","approx":true,"parent":"18","description":"Die Sky Lounge ist laut neuem Aushang im dritten Stock des Beach Resort. Der Pin zeigt das Gebäude; der exakte Eingang und die Öffnungszeiten sind nicht bestätigt."},{"id":"25","title":"Lobbybar","short":"Lobbybar","category":"bar","x":197,"y":159,"icon":"fork","approx":true,"parent":"1","description":"Bar in der Lobby des Hauptresorts. Früher Frühstückssnack laut Veranstalter. Die exakte Thekenposition ist im Lageplan nicht markiert."},{"id":"26","title":"Guest Relations","short":"Guest Relations","category":"service","x":214,"y":185,"icon":"door","approx":true,"parent":"1","description":"Reservierungen für À-la-carte-Restaurants und Fragen zum Upgrade. In der Lobby – der genaue Schalter ist nur ungefähr markiert."},{"id":"27","title":"Cleo Travel Desk","short":"Cleo Travel","category":"service","x":160,"y":180,"icon":"car","approx":true,"parent":"1","description":"Schalter für Shuttle-Anmeldungen und Transfers nahe der Rezeption. Für den Shopping-Shuttle bis 13 Uhr am selben Tag anmelden."},{"id":"28","title":"Half Way Bar","short":"Half Way Bar","category":"bar","x":594,"y":179,"icon":"fork","approx":true,"parent":"16","description":"Bar in der Umgebung des Activity Pools laut Hotelbeschreibung. Exakter Standort im Lageplan nicht gesondert nummeriert."},{"id":"29","title":"Padel Tennis · Reservierung","short":"Padel","category":"sport","x":224,"y":331,"icon":"ball","approx":true,"parent":"6","description":"Der Padelplatz selbst ist im älteren Plan nicht markiert. Dieser Pin zeigt den Gym-Bereich zur Platzreservierung; 15 Euro/Stunde zuzüglich eventuellem Flutlicht."},{"id":"30","title":"Beachvolleyball","short":"Beachvolley","category":"beach","x":711,"y":200,"icon":"ball","approx":true,"parent":"17","description":"Beachvolleyball am Strand laut täglichem Animationsprogramm. Der konkrete Platz ist nicht im Lageplan eingezeichnet."},{"id":"31","title":"Boccia","short":"Boccia","category":"beach","x":768,"y":207,"icon":"target","approx":true,"parent":"17","description":"Boccia-Animation am Strand. Der Pin ist nur eine ungefähre Strandposition, kein garantierter fester Spielplatz."},{"id":"32","title":"Disco · Haupthotel","short":"Disco","category":"show","x":270,"y":235,"icon":"ticket","approx":true,"parent":"4","description":"Tanzveranstaltungen des Haupthotels im Bereich Amphitheater. Der genaue Disco-Eingang ist auf dem Hotelplan nicht separat verzeichnet."},{"id":"33","title":"Scheherazade-Café","short":"Café","category":"bar","x":207,"y":202,"icon":"fork","approx":true,"parent":"1","description":"Café mit orientalischem Gebäck und zusätzlichen kostenpflichtigen Angeboten. Die genaue Position bitte an der Rezeption erfragen."},{"id":"34","title":"Romantisches Strandzelt · Reservierung","short":"Strandzelt","category":"beach","x":806,"y":290,"icon":"sun","approx":true,"parent":"17","description":"Sonderpaket im privaten Strandzelt mit Reservierung. Die tatsächliche Zeltposition wird vor Ort vereinbart; nur der Strandbereich ist bekannt."}];
+const places=rows.map(([id,title,short,category,x,y,icon,description])=>({id:String(id),title,short,category,x,y,icon,description})).concat(extraPlaces);
+const categories={all:['Alles','map'],food:['Essen','fork'],bar:['Bars','fork'],pool:['Pools','waves'],sport:['Sport','activity'],beach:['Strand','sun'],show:['Shows','ticket'],service:['Service','door'],stay:['Adults Only','bed'],kids:['Kinder','spark']};
 const meals={
 'Mittagssnacks':{place:'15',lead:'Etwas Herzhaftes, ohne den Pooltag zu unterbrechen.',body:'Das Pool Restaurant & Bar bietet tagsüber kleine herzhafte Mahlzeiten und Snacks. Das ist ein eigenes Angebot an der Poolbar – nicht das große Mittagsbuffet im Soko. Getränke bekommt ihr ebenfalls an der Bar.',items:['Herzhafte Snacks und kleine Mahlzeiten','Getränke an der Poolbar; Umfang nach eurem All-Inclusive-Paket','Wer ein vollständiges Buffet möchte: Soko von 12:30 bis 14:30 Uhr'],note:'Eine konkrete Tageskarte ist nicht veröffentlicht. Burger, Pizza oder Pommes sind deshalb hier nicht als garantiertes Angebot aufgelistet.',sources:['pool','slr'],badge:'12:30–16:00 · laut Veranstalter'},
 'Eis & Gebäck':{place:'15',lead:'Die süße Pause am Nachmittag.',body:'Laut eurem Veranstalter gibt es an der Poolbar nachmittags Eiscreme und Gebäck. Sorten und die konkrete Gebäckauswahl können wechseln. Die separat verkauften orientalischen Mitnahme-Boxen sind ein anderes Angebot.',items:['Eiscreme','Gebäck','Vor Ort nach Sorten und Allergenen fragen'],note:'Schauinsland nennt 16:00–17:00 Uhr. Die ältere Broschüre hat längere Eiszeiten; hier bleibt das aktuelle Veranstalter-Zeitfenster maßgeblich.',sources:['slr'],badge:'16:00–17:00 · laut Veranstalter'},
@@ -48,23 +49,33 @@ dinner:{place:'3',lead:'Ein anderer Themenabend – am gleichen Lieblingsplatz.'
 function resolve(e={}){
 const t=String(e.title||'').toLowerCase(),l=String(e.location||'').toLowerCase();
 if(t==='spätes abendessen')return {id:null,note:'Restaurant für das späte Essen noch nicht bestätigt.'};
+if(/sky lounge/.test(t+' '+l))return {id:'24',approx:true,note:'Die Sky Lounge liegt im 3. Stock, aber der Eingang ist nicht separat markiert.'};
+if(/guest relations/.test(t+' '+l))return {id:'26',approx:true,note:'Guest Relations in der Lobby, Schalterposition ungefähre Angabe.'};
+if(/cleo travel|travel desk|shopping.shuttle/.test(t+' '+l))return {id:'27',approx:true,note:'Travel Desk in der Lobbyumgebung; genaue Schalterposition nicht markiert.'};
+if(/lobbybar|lobby bar/.test(t+' '+l))return {id:'25',approx:true,note:'Bar innerhalb der Lobby; Theke nur ungefähr markiert.'};
+if(/scheherazade/.test(t+' '+l))return {id:'33',approx:true,note:'Café-Position nur ungefähre Angabe.'};
+if(/romantic.*(beach|strand)|strandzelt/.test(t+' '+l))return {id:'34',approx:true,note:'Individuelle Strandzeltposition wird erst bei Buchung vergeben.'};
+if(/beachvolleyball|beach volley/.test(t))return {id:'30',approx:true,note:'Ungefähre Station am Strand.'};
+if(/boccia/.test(t))return {id:'31',approx:true,note:'Ungefähre Station am Strand.'};
+
 if(/shuttle zurück/.test(t))return {id:null,note:'Start außerhalb des Resorts. Rückfahrt laut Treffpunkt der Buchung.'};
-if(/padel/.test(t))return {id:'6',approx:true,note:'Markiert ist das Gym zur Reservierung. Der Padelplatz fehlt im PDF.'};
+if(/padel/.test(t))return {id:'29',approx:true,note:'Pin beim Gym für Reservierungen, Padelplatz nicht genau bekannt.'};
 if(/bogenschie|archery/.test(t))return {id:'8',approx:true,note:'Bereich aus dem Hotelplan. Aktuellen Treffpunkt bei den Tennisplätzen bestätigen.'};
 if(/bbq/.test(t))return {id:'17',approx:true,note:'Strandbereich; das genaue Dinner-Setup nennt der Plan nicht.'};
-if(/beach resort poolbar|beach resort pool bar|adults.only.poolbar|adults only pool bar/.test(t+' '+l))return {id:'18',approx:true,note:'Adults-Only-Poolbar im Beach Resort. Der Lageplan markiert den Bereich, nicht die einzelne Bar.'};
+if((e.resortArea==='adults-only'&&/poolbar|pool bar/.test(t+' '+l))||/beach resort poolbar|beach resort pool bar|adults.only.poolbar|adults only pool bar/.test(t+' '+l))return {id:'23',approx:true,note:'Ungefähre Adults-Only-Poolbar beim Beach Resort; die genaue Position ist nicht markiert.'};
 if(/waterfront/.test(t+' '+l))return {id:'19'};
-if(/halfway|half way/.test(t+' '+l))return {id:'16',approx:true,note:'Umgebung des Activity Pools; Bar nicht exakt im PDF markiert.'};
+if(/halfway|half way/.test(t+' '+l))return {id:'28',approx:true,note:'Ungefähre Umgebung bei Activity Pool.'};
 if(/soko/.test(l)||/abendbuffet|frühstücksbuffet|mittagsbuffet/.test(t))return {id:'3'};
 if(/poolbar|pool bar|poolrestaurant|pool restaurant/.test(l)||meals[e.title]?.place==='15')return {id:'15'};
 if(/vista mare/.test(l))return {id:'2'};
 if(/family pool|familienpool/.test(l)||/wasserball/.test(t))return {id:'14'};
 if(/activity pool|aktivpool/.test(l)||/wassergymnastik/.test(t))return {id:'16'};
-if(/amphitheater|amphitheatre|disco/.test(l))return {id:'4'};
+if(/disco/.test(l))return {id:'32',approx:true,note:'Genauer Eingang im Amphitheaterbereich nicht markiert.'};
+if(/amphitheater|amphitheatre/.test(l))return {id:'4'};
 if(/tennis/.test(t+' '+l))return {id:'9'};
 if(/lobby|rezeption|cleo.travel|shuttle/.test(t+' '+l))return {id:'1'};
 if(/strand|beach/.test(l))return {id:'17',approx:true,note:'Der Strandbereich ist bekannt, die einzelne Aktivitätsstation nicht eingezeichnet.'};
 return {id:null,note:'Dieser konkrete Ort ist im Hotelplan nicht verlässlich verortet.'};
 }
-return {sources,places,categories,meals,resolve,width:1000,height:732,version:'explorer-1'};
+return {sources,places,categories,meals,resolve,width:1000,height:732,version:'explorer-3'};
 })();

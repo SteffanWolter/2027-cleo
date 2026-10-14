@@ -50,3 +50,18 @@
 .ce-pin.stay,.ce-pin[data-ce-place="19"]{--pin:#7f5da5}
 .ce-pin[data-ce-place="18"] .ce-pin-glyph,.ce-pin[data-ce-place="19"] .ce-pin-glyph{box-shadow:0 0 0 2px #a58bc537;background:#f5eefb}
 .ce-place-panel:has(.ce-place-icon.stay) .ce-panel-heading h2{color:#795aa0}
+
+/* High-density vector map, subtle overlay and clearly approximate pins. */
+#ceWorld{will-change:auto!important}
+#ceArt{shape-rendering:geometricPrecision}
+.ce-pin.approx{--pin:#58716a}
+.ce-pin.approx .ce-pin-glyph{background:#fffef6f2;border:2px dashed #a3baa9}
+.ce-pin.approx .ce-pin-number{background:#f5eacc;color:#7b7144}
+.ce-pin.approx.selected .ce-pin-glyph{background:#244c49;color:#fff;border-style:solid}
+.ce-pin.bar{--pin:#a26d42}
+.ce-pin.approx[data-ce-place="23"],.ce-pin.approx[data-ce-place="24"]{--pin:#7954a1}
+.ce-pin.approx[data-ce-place="23"] .ce-pin-glyph,.ce-pin.approx[data-ce-place="24"] .ce-pin-glyph{background:#f3ecfb}
+.ce-pin.approx.selected .ce-pin-glyph{background:#244c49}
+#ceMap .ce-place-panel{background:rgba(255,255,253,.94)}
+.ce-map-note{background:#f7faf5bc;padding:6px 9px;border-radius:9px;backdrop-filter:blur(5px)}
+@media(max-width:780px){.ce-map-note{max-width:calc(100% - 95px);margin:0 auto;font-size:9px!important}.ce-pin-glyph{box-shadow:0 0 0 1px #42665d2b,0 2px 6px #334d4733}}

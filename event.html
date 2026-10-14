@@ -58,7 +58,7 @@ button,a{font:inherit;touch-action:manipulation}button{cursor:pointer}a{color:in
 .loading{padding:70px 20px;text-align:center;color:#8a9693}
 @media(max-width:540px){.wrap{padding:13px 0 80px}.top{margin:0 17px 13px}.poster{border-radius:22px 22px 0 0;border-left:0;border-right:0;box-shadow:none}.poster-head{min-height:315px;padding:24px 25px 30px}.poster-head:after{right:-146px;top:123px}.eyebrow{margin-top:41px}.poster-title{font-size:clamp(38px,10vw,51px)}.poster-content{padding:23px 23px 42px}.meta{padding:14px;min-height:71px}.meta strong{font-size:15px}.section h2{font-size:20px}.ornament{right:19px;bottom:24px;opacity:.1;width:90px;height:90px}}
 @media print{html,body{background:#fff}.wrap{padding:0;max-width:100%}.top,.actions{display:none}.poster{border:0;box-shadow:none;border-radius:0}.poster-head{min-height:250px;break-inside:avoid}.poster-content{padding-top:18px}.section{break-inside:avoid}}
-</style>
+.poster.adults{--tint:#7954a1;--pale:#f2ecf9;--deep:#533978}.poster.adults .poster-head{border-top:7px solid #a487c6}.poster.main .poster-head{border-top:7px solid #7fbfbd}.poster.adults .meta:first-child{background:#f5f0fb}.poster.adults .poster-sub{font-weight:550}</style>
 </head>
 <body>
 <div class="wrap">
@@ -103,6 +103,8 @@ function matchGame(e,data){
  return found?byId(data.games,found[1]):null;
 }
 function matchPoster(e,data){
+ if(e.resortArea==='adults-only')return null; // Main-resort poster is never evidence for an Adults-Only event.
+
  const t=e.title.toLowerCase();
  const rules=[
  [/gala|abendbuffet|themenbuffet/,'soko'],[/bbq/,'bbq'],[/boccia|volley|darts|morgengym|flying yoga|tanzkurs|wasser(gym|ball)/,'morning'],
@@ -147,6 +149,7 @@ function sourceInfo(e,data){
 function fill(e,data){
  const kindname=kind(e),game=matchGame(e,data),poster=matchPoster(e,data);
  const eventTitle=e.title;
+ const adult=e.resortArea==='adults-only';const zoneName=adult?'ADULTS ONLY · BEACH RESORT':'HAUPTRESORT';
  const date=dateFormat(e.date);
  let intro=game?.intro||expl[eventTitle]||e.note||(
   kindname==='food'?'Essensangebot im Hotel. Verbindlich sind die jeweils ausgehängten Zeiten und Menüangebote.':
@@ -166,7 +169,7 @@ function fill(e,data){
  }
  const note=String(e.note||'').trim();
  const desc=String(intro||'').trim();
- let html='<article class="poster '+kindname+'"><header class="poster-head"><div class="logo"><span>◈ CLEOPATRA</span><span class="mini">MAKADI BAY · 2026</span></div><p class="eyebrow">'+esc(kindname==='food'?'Genießen':kindname==='sport'?'Aktiv sein':kindname==='transfer'?'Entdecken':kindname==='kids'?'Für kleine Gäste':kindname==='special'?'Besonderes Erlebnis':'Heute erleben')+'</p><h1 class="poster-title">'+esc(eventTitle)+'</h1><p class="poster-sub">'+esc(date)+' · '+esc(e.location||'Im Resort')+'</p>'+glyph(kindname)+'</header><div class="poster-content"><div class="meta-grid"><div class="meta"><small>Beginn</small><strong>'+esc(e.time)+' Uhr</strong><span>'+ (e.end?'Ende '+esc(e.end)+' Uhr':'Endzeit nicht veröffentlicht') +'</span></div><div class="meta"><small>Treffpunkt</small><strong>'+esc(e.location||'Bitte nachfragen')+'</strong><span>Cleopatra Luxury Resort</span></div></div><section class="section"><h2>Was erwartet euch?</h2><p>'+esc(desc)+'</p></section>';
+ let html='<article class="poster '+kindname+(adult?' adults':' main')+'"><header class="poster-head"><div class="logo"><span>◈ CLEOPATRA</span><span class="mini">MAKADI BAY · 2026</span></div><p class="eyebrow">'+zoneName+' · '+'+esc(kindname==='food'?'Genießen':kindname==='sport'?'Aktiv sein':kindname==='transfer'?'Entdecken':kindname==='kids'?'Für kleine Gäste':kindname==='special'?'Besonderes Erlebnis':'Heute erleben')+'</p><h1 class="poster-title">'+esc(eventTitle)+'</h1><p class="poster-sub">'+esc(date)+' · '+esc(e.location||'Im Resort')+'</p>'+glyph(kindname)+'</header><div class="poster-content"><div class="meta-grid"><div class="meta"><small>Beginn</small><strong>'+esc(e.time)+' Uhr</strong><span>'+ (e.end?'Ende '+esc(e.end)+' Uhr':'Endzeit nicht veröffentlicht') +'</span></div><div class="meta"><small>Treffpunkt</small><strong>'+esc(e.location||'Bitte nachfragen')+'</strong><span>'+(adult?'Cleopatra Beach Resort · Adults Only':'Cleopatra Luxury Resort')+'</span></div></div><section class="section"><h2>Was erwartet euch?</h2><p>'+esc(desc)+'</p></section>';
  if(note&&note!==desc)html+='<div class="tip"><strong>Hinweis des Hotels</strong>'+esc(note)+'</div>';
  if(price)html+='<div class="tip caution"><strong>Zusätzlicher Preis</strong>'+esc(price)+' — vor Ort bestätigen.</div>';
  if(e.request)html+='<div class="tip caution"><strong>Nur auf Anfrage</strong>Vorher bei Rezeption oder Guest Relations anmelden.</div>';

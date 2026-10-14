@@ -27,3 +27,7 @@
 #ceGpsStatus{pointer-events:none}
 #ceMap .ce-map-controls{z-index:20}
 @media(max-width:780px){#ceGpsStatus{width:calc(100% - 55px);max-width:calc(100% - 55px)}}
+
+#ceGpsCenter[hidden]{display:none!important}
+#ceGpsCenter:not([hidden]){background:#eaf5ff;color:#0d70ca;border-color:#c7e0f4}
+#ceGpsCenter:not([hidden]):active{transform:scale(.96)}

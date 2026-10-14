@@ -1,8 +1,8 @@
 {
-  "version": "cleo-53390200272e",
+  "version": "cleo-dffc9edb6e57",
   "published": "2026-10-14",
   "message": "Getrennte, farbige Adults-Only- und Hauptresort-Programme in jedem Urlaubstag; Android-PWA-Auto-Updates.",
   "notes": "Neue Hotelprogramme werden beim nächsten Online-Öffnen bzw. bei erneuter Aktivierung übernommen.",
-  "source_commit": "53390200272e66441338e9c704505b062c321f76",
+  "source_commit": "dffc9edb6e57147f0bd8cef38914ef21a591dac2",
   "published_by": "GitHub Actions on main push"
 }

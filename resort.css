@@ -39,3 +39,14 @@
 
 /* selected-layer-explorer2: keep the layer control usable above an open place sheet */
 @media(max-width:780px){#ceMap:has(.ce-place-panel.has-place) .ce-layer{top:calc(176px + env(safe-area-inset-top));bottom:auto;max-width:calc(100% - 72px)}}
+
+/* Resort identity in map-linked event sheets */
+.ce-detail-head.ce-adults-zone{background:#f0eafa!important;color:#715098!important}
+.ce-detail-head.ce-adults-zone .ce-detail-symbol{background:#ffffffa8;border-color:#dac8ea}
+.ce-detail-head.ce-main-zone{box-shadow:inset 0 6px 0 #77b6b6}
+.ce-detail-head.ce-adults-zone{box-shadow:inset 0 6px 0 #9a7ac0}
+.ce-place-events button:has(+button) {transition:background .15s}
+.ce-place-events button:hover{background:#f4f8f3}
+.ce-pin.stay,.ce-pin[data-ce-place="19"]{--pin:#7f5da5}
+.ce-pin[data-ce-place="18"] .ce-pin-glyph,.ce-pin[data-ce-place="19"] .ce-pin-glyph{box-shadow:0 0 0 2px #a58bc537;background:#f5eefb}
+.ce-place-panel:has(.ce-place-icon.stay) .ce-panel-heading h2{color:#795aa0}

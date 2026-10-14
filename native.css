@@ -479,3 +479,57 @@ thead{background:#f5f7f7}
  .event-poster-dialog-bar{height:57px;padding-left:19px;padding-right:14px}
  #eventPosterFrame{height:calc(100% - 57px)}
 }
+
+
+/* October final: two resorts, one date selector. Clear, consistent color semantics. */
+:root{--cleo-main:#176f73;--cleo-main-soft:#e7f4f3;--cleo-main-line:#bfe0dd;--cleo-adults:#7954a1;--cleo-adults-soft:#f2ecf9;--cleo-adults-line:#ddcbea}
+.cleo-zone-inline{display:inline-flex;align-items:center;vertical-align:middle;border-radius:7px;font-size:10px;letter-spacing:.01em;font-weight:760;padding:3px 6px;margin:0 4px 3px 0;line-height:1.25;white-space:nowrap}
+.cleo-zone-inline-main{background:var(--cleo-main-soft);color:var(--cleo-main)}
+.cleo-zone-inline-adults{background:var(--cleo-adults-soft);color:var(--cleo-adults)}
+.cleo-zone-inline-personal{background:#f1f1f1;color:#6e7477}
+.event.cleo-event-main{border-left:3px solid var(--cleo-main-line)}
+.event.cleo-event-adults{border-left:3px solid var(--cleo-adults-line);background:linear-gradient(90deg,#faf7fef0,#fff 45%)}
+.event.cleo-event-adults.past{opacity:1}
+.event.cleo-event-adults .event-line:before{background:var(--cleo-adults)!important;box-shadow:0 0 0 3px #eadff5}
+.event.cleo-event-main .event-line:before{background:var(--cleo-main)!important}
+.event.cleo-event-adults .event-time{color:var(--cleo-adults)}
+.event.cleo-event-main .event-time{color:var(--cleo-main)}
+.event.cleo-event-adults .poster-tap-hint{background:#f2ecf9;color:#704c95;border-color:#e9dcf3}
+.event.cleo-event-adults .ce-map-link{background:#f2ecf9;color:#704c95;border-color:#e5d5f0}
+.event.cleo-event-main .ce-map-link{background:#ebf5f3;color:#1d686a;border-color:#d8eae8}
+.cleo-evening-zones{padding:5px 12px 16px;display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.cleo-zone{border:1px solid #e5e9e8;border-radius:20px;overflow:hidden;min-width:0;background:#fff;box-shadow:0 2px 9px #1b352907}
+.cleo-zone-main{border-color:var(--cleo-main-line)}
+.cleo-zone-adults{border-color:var(--cleo-adults-line)}
+.cleo-zone-header{min-height:72px;display:flex;align-items:center;gap:10px;padding:12px 14px}
+.cleo-zone-main .cleo-zone-header{background:var(--cleo-main-soft);color:var(--cleo-main)}
+.cleo-zone-adults .cleo-zone-header{background:var(--cleo-adults-soft);color:var(--cleo-adults)}
+.cleo-zone-header .cleo-zone-icon{width:36px;height:36px;display:grid;place-items:center;flex-shrink:0;background:#ffffff99;border-radius:12px}
+.cleo-zone-header .cleo-zone-icon svg{width:18px;height:18px;stroke-width:2}
+.cleo-zone-header>div{flex:1;min-width:0}
+.cleo-zone-header strong{display:block;font-size:14px;font-weight:760;letter-spacing:-.03em}
+.cleo-zone-header small{display:block;font-size:10px;opacity:.78;font-weight:550;line-height:1.4;margin-top:3px}
+.cleo-zone-header>b{font-size:11px;line-height:1.5;border-radius:7px;background:#ffffffa8;padding:3px 7px}
+.cleo-zone-events{min-width:0}
+.cleo-zone .event{grid-template-columns:45px 6px minmax(0,1fr) 31px;padding:14px 12px;gap:6px}
+.cleo-zone .event .event-title{font-size:13px}
+.cleo-zone .event .event-note{line-height:1.55}
+.cleo-zone .event .poster-tap-hint{font-size:10px;white-space:normal;gap:4px;padding:5px 7px}
+.cleo-zone .event .event-info{font-size:10px}
+.cleo-zone .event .ce-map-link{font-size:9px;padding:5px 7px}
+.cleo-zone .event .save{width:30px;height:30px}
+.cleo-zone-empty{font-size:11px;line-height:1.6;color:#849394;padding:18px 14px;margin:0}
+.cleo-zone-main .cleo-zone-empty{color:#568487}
+.cleo-zone-adults .cleo-zone-empty{color:#8f76a7}
+.cleo-journey-area{border-radius:15px;padding:13px 12px;margin:12px 0 0}
+.cleo-journey-main{background:#ecf7f5;border:1px solid #d7ebe8}
+.cleo-journey-adults{background:#f4eef9;border:1px solid #e6d8f0}
+.cleo-journey-area-label{display:flex;align-items:center;gap:7px;font-size:12px;letter-spacing:-.01em}
+.cleo-journey-main .cleo-journey-area-label{color:#276d70}
+.cleo-journey-adults .cleo-journey-area-label{color:#7c57a0}
+.cleo-journey-area-label svg{width:15px;height:15px}
+.cleo-journey-area p{margin-top:10px;font-size:11px!important;color:#617476}
+.cleo-journey-adults p{color:#725d87}
+.cleo-journey-area p svg{width:14px;height:14px;flex-shrink:0}
+@media(max-width:1120px){.cleo-evening-zones{grid-template-columns:1fr}}
+@media(max-width:780px){.cleo-evening-zones{grid-template-columns:1fr;gap:11px;padding:6px 0 14px}.cleo-zone{border-radius:17px}.cleo-zone-header{min-height:66px}.cleo-zone .event{grid-template-columns:49px 7px minmax(0,1fr) 32px;gap:7px;padding:14px 13px}.cleo-zone .event .event-title{font-size:14px}.cleo-zone .event .event-info{font-size:11px}.cleo-zone-inline{font-size:9px;padding:3px 6px;margin-bottom:4px}}

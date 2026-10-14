@@ -1,0 +1,121 @@
+name: Validate live GPS
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gps.js'
+      - 'gps.css'
+      - 'index.html'
+      - 'sw.js'
+      - '.github/workflows/validate-gps.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax and offline asset checks
+        run: |
+          node --check gps.js
+          node --check resort.js
+          python3 - <<'PY'
+          from pathlib import Path
+          html=Path('index.html').read_text()
+          sw=Path('sw.js').read_text()
+          assert '<script src="./gps.js' in html
+          assert './gps.css' in html
+          assert '"./gps.js"' in sw and '"./gps.css"' in sw
+          assert 'navigator.geolocation.watchPosition' in Path('gps.js').read_text()
+          assert 'localStorage.setItem(KEY' in Path('gps.js').read_text()
+          print('GPS script, stylesheet and offline shell verified')
+          PY
+      - name: Install browser
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+      - name: GPS opt-in and lifecycle (mobile browser)
+        run: |
+          mkdir -p /tmp/cleo-gps-qa
+          python - <<'PY'
+          import json, threading, http.server, time
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          class Quiet(http.server.SimpleHTTPRequestHandler):
+            def log_message(self,*args):pass
+          server=http.server.ThreadingHTTPServer(('127.0.0.1',8342),Quiet)
+          threading.Thread(target=server.serve_forever,daemon=True).start()
+          tests=[]
+          errors=[]
+          with sync_playwright() as p:
+            browser=p.chromium.launch()
+            context=browser.new_context(viewport={'width':393,'height':852},is_mobile=True,has_touch=True,
+              geolocation={'latitude':26.98725,'longitude':33.90333,'accuracy':16},
+              permissions=['geolocation'])
+            page=context.new_page()
+            page.on('pageerror',lambda e:errors.append(str(e)))
+            page.goto('http://127.0.0.1:8342/',wait_until='networkidle')
+            page.wait_for_function('typeof window.CleoGPS!=="undefined" && typeof window.CleoResort!=="undefined"')
+            assert page.evaluate('CleoGPS.enabled()') is False
+            assert page.evaluate('CleoGPS.active()') is False
+            tests.append('GPS remains off by default with no geolocation watch')
+            page.evaluate('CleoResort.open()')
+            page.wait_for_timeout(300)
+            assert page.locator('#ceGpsButton').is_visible()
+            page.locator('#ceGpsButton').click()
+            page.wait_for_function('CleoGPS.active() && !document.querySelector("#ceGpsMarker").hidden',timeout=20000)
+            assert page.evaluate('CleoGPS.enabled()')
+            coords=page.evaluate('(()=>{const a=document.querySelector("#ceGpsMarker");return [parseFloat(a.style.left),parseFloat(a.style.top)]})()')
+            assert all(0<v<1000 for v in coords),coords
+            assert page.locator('#ceGpsStatus').is_visible()
+            page.screenshot(path='/tmp/cleo-gps-qa/gps-mobile.png')
+            tests.append('Permission-granted watch projects approximate blue marker and shows accuracy')
+            page.evaluate('CleoResort.close()')
+            page.wait_for_timeout(120)
+            assert page.evaluate('CleoGPS.active()') is False
+            assert page.locator('#ceGpsMarker').is_hidden()
+            assert page.evaluate('CleoGPS.enabled()')
+            tests.append('Map close stops GPS but retains enabled preference')
+            page.evaluate('CleoResort.open()')
+            page.wait_for_function('CleoGPS.active() && !document.querySelector("#ceGpsMarker").hidden',timeout=20000)
+            page.evaluate('document.hidden') # do not depend on permissions UI
+            tests.append('GPS resumes automatically when the map is reopened')
+            page.reload(wait_until='networkidle')
+            page.wait_for_function('!!window.CleoGPS && !!window.CleoResort')
+            assert page.evaluate('CleoGPS.enabled()')
+            assert page.evaluate('CleoGPS.active()') is False
+            page.evaluate('CleoResort.open()')
+            page.wait_for_function('CleoGPS.active() && !document.querySelector("#ceGpsMarker").hidden',timeout=20000)
+            tests.append('Enabled preference persists across app reload')
+            page.locator('#ceGpsButton').click()
+            assert not page.evaluate('CleoGPS.enabled()')
+            assert not page.evaluate('CleoGPS.active()')
+            assert page.locator('#ceGpsMarker').is_hidden()
+            tests.append('User can turn GPS off immediately')
+            page.evaluate('CleoResort.close()')
+            context.close()
+            noPermission=browser.new_context(viewport={'width':393,'height':852},is_mobile=True,has_touch=True)
+            noPermission.grant_permissions([])
+            page2=noPermission.new_page()
+            page2.goto('http://127.0.0.1:8342/',wait_until='networkidle')
+            page2.wait_for_function('!!window.CleoGPS && !!window.CleoResort')
+            page2.evaluate('CleoResort.open()')
+            page2.locator('#ceGpsButton').click()
+            page2.wait_for_timeout(1500)
+            # permission not granted -> must not fake a position.
+            assert page2.locator('#ceGpsMarker').is_hidden()
+            tests.append('Permission denied never creates a fabricated GPS point')
+            noPermission.close()
+            browser.close()
+          server.shutdown()
+          assert not errors,errors
+          Path('/tmp/cleo-gps-qa/results.json').write_text(json.dumps({'passed':tests,'errors':errors},indent=2))
+          print(json.dumps({'passed':tests},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cleo-gps-validation
+          path: /tmp/cleo-gps-qa/
+          retention-days: 3
